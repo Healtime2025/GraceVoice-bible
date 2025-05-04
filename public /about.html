@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About GraceVoice</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 {
+      font-size: 28px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 10px auto;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 20px;
+      font-size: 16px;
+      background: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #145a9e;
+    }
+    .night-mode {
+      background-color: #1c1c1c;
+      color: #e0e0e0;
+    }
+    .night-mode button {
+      background-color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>📖 About GraceVoice</h1>
+
+  <p><strong>GraceVoice</strong> is your voice-powered Bible companion, built to help you listen, follow, and reflect on scripture hands-free.</p>
+
+  <p>Whether you're an elderly reader, someone with limited eyesight, or just prefer hearing the Word, GraceVoice makes it easy to:</p>
+
+  <ul style="list-style: none; padding: 0;">
+    <li>🔊 Listen to chapters and verses read aloud</li>
+    <li>🎙️ Use simple voice commands like "Read John 3 verse 16"</li>
+    <li>💾 Bookmark favorite verses and notes</li>
+    <li>📱 Install and use offline on any device</li>
+  </ul>
+
+  <p><strong>Example:</strong> Say <em>“Read Matthew chapter 5”</em> after opening GraceVoice, and it will begin reading.</p>
+
+  <p>This app works best when already open. Voice assistants like Siri or Google Assistant may support shortcuts in future updates.</p>
+
+  <p><strong>GraceVoice does not require internet to read previously opened chapters.</strong> For full offline use, we are working on complete Bible loading.</p>
+
+  <button onclick="window.location.href='index.html'">🔙 Back to Home</button>
+
+  <script>
+    window.onload = () => {
+      if (localStorage.getItem("graceTheme") === "dark") {
+        document.body.classList.add("night-mode");
+      }
+    };
+  </script>
+</body>
+</html>
