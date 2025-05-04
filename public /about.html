@@ -9,71 +9,68 @@
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f4f4f4;
-      color: #333;
-      text-align: center;
       padding: 30px;
+      text-align: center;
+      margin-bottom: 80px;
     }
     h1 {
       font-size: 28px;
       color: #2c3e50;
-      margin-bottom: 10px;
     }
     p {
       font-size: 18px;
       line-height: 1.6;
+      color: #333;
       max-width: 700px;
-      margin: 10px auto;
+      margin: 0 auto 20px;
     }
-    button {
-      padding: 10px 20px;
-      margin: 20px;
-      font-size: 16px;
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       background: #1976d2;
-      color: white;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    }
+    .nav-bar button {
+      background: white;
+      color: #1976d2;
       border: none;
-      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 16px;
+      border-radius: 6px;
       cursor: pointer;
     }
-    button:hover {
-      background: #145a9e;
-    }
-    .night-mode {
-      background-color: #1c1c1c;
-      color: #e0e0e0;
-    }
-    .night-mode button {
-      background-color: #333;
+    .nav-bar button:hover {
+      background: #f0f0f0;
     }
   </style>
 </head>
 <body>
-  <h1>📖 About GraceVoice</h1>
 
-  <p><strong>GraceVoice</strong> is your voice-powered Bible companion, built to help you listen, follow, and reflect on scripture hands-free.</p>
+  <h1>ℹ️ About GraceVoice</h1>
 
-  <p>Whether you're an elderly reader, someone with limited eyesight, or just prefer hearing the Word, GraceVoice makes it easy to:</p>
+  <p><strong>GraceVoice</strong> is a voice-powered Bible reader made for ease, comfort, and clarity.</p>
 
-  <ul style="list-style: none; padding: 0;">
-    <li>🔊 Listen to chapters and verses read aloud</li>
-    <li>🎙️ Use simple voice commands like "Read John 3 verse 16"</li>
-    <li>💾 Bookmark favorite verses and notes</li>
-    <li>📱 Install and use offline on any device</li>
-  </ul>
+  <p>It helps you hear the Word of God aloud using simple voice commands like:</p>
 
-  <p><strong>Example:</strong> Say <em>“Read Matthew chapter 5”</em> after opening GraceVoice, and it will begin reading.</p>
+  <p><em>“Read Matthew chapter 5”</em> <br> <em>“Repeat”</em> or <em>“Stop”</em></p>
 
-  <p>This app works best when already open. Voice assistants like Siri or Google Assistant may support shortcuts in future updates.</p>
+  <p>You can also manually choose a Bible chapter and hear it read in a clear, friendly voice. Great for elders, kids, or anyone who wants to listen instead of reading.</p>
 
-  <p><strong>GraceVoice does not require internet to read previously opened chapters.</strong> For full offline use, we are working on complete Bible loading.</p>
+  <p><strong>No internet? No problem.</strong> GraceVoice works offline for chapters you've already opened, and can store your bookmarks and notes safely on your device.</p>
 
-  <button onclick="window.location.href='index.html'">🔙 Back to Home</button>
+  <p>To start, just go to the <strong>🏠 Home</strong> page, or use the buttons below to explore more features.</p>
 
-  <script>
-    window.onload = () => {
-      if (localStorage.getItem("graceTheme") === "dark") {
-        document.body.classList.add("night-mode");
-      }
-    };
-  </script>
+  <div class="nav-bar">
+    <button onclick="window.location.href='index.html'">🏠 Home</button>
+    <button onclick="window.location.href='bookmarks.html'">🔖 Bookmarks</button>
+    <button onclick="window.location.href='settings.html'">⚙️ Settings</button>
+  </div>
+
 </body>
 </html>
