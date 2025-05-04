@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GraceVoice Reader</title>
   <link rel="manifest" href="manifest.json">
   <style>
@@ -11,6 +11,7 @@
       background: #f4f4f4;
       text-align: center;
       padding: 30px;
+      transition: background 0.3s, color 0.3s;
     }
     h1 {
       font-size: 28px;
@@ -37,6 +38,7 @@
       color: white;
       border-radius: 8px;
       cursor: pointer;
+      transition: background 0.2s;
     }
     button:hover {
       background: #145a9e;
@@ -60,6 +62,13 @@
     }
     .night-mode button:hover {
       background: #555;
+    }
+
+    @media (max-width: 600px) {
+      .verse-box {
+        font-size: 20px;
+        padding: 15px;
+      }
     }
   </style>
 </head>
@@ -97,7 +106,7 @@
 
     function repeatVerses() {
       stopReading();
-      setTimeout(() => playVerses(), 100);
+      setTimeout(() => playVerses(), 300); // slightly reduced delay
     }
 
     function stopReading() {
@@ -107,8 +116,7 @@
     function toggleTheme() {
       const body = document.body;
       const btn = document.getElementById("themeBtn");
-      body.classList.toggle("night-mode");
-      const isDark = body.classList.contains("night-mode");
+      const isDark = body.classList.toggle("night-mode");
       btn.textContent = isDark ? "☀️ Theme" : "🌙 Theme";
       localStorage.setItem("graceTheme", isDark ? "dark" : "light");
     }
@@ -133,18 +141,18 @@
         }
 
         bookRef.textContent = `${data.book} Chapter ${data.chapter} (${translation.toUpperCase()})`;
-
-        fullText = Object.entries(data.verses)
-          .map(([v, t]) => `${v}. ${t}`)
-          .join(" ");
-
+        fullText = Object.entries(data.verses).map(([v, t]) => `${v}. ${t}`).join(" ");
         verseBox.innerHTML = Object.entries(data.verses)
           .map(([v, t]) => `<p><strong>${v}</strong> ${t}</p>`)
           .join("");
 
+        // Add to reading history (no duplicate entries for same chapter)
         const bookmarks = JSON.parse(localStorage.getItem("graceAutoBookmarks") || "[]");
-        bookmarks.unshift({ book, chapter, timestamp: new Date().toISOString() });
-        localStorage.setItem("graceAutoBookmarks", JSON.stringify(bookmarks.slice(0, 10)));
+        const alreadyLogged = bookmarks.find(b => b.book === book && b.chapter === chapter);
+        if (!alreadyLogged) {
+          bookmarks.unshift({ book, chapter, timestamp: new Date().toISOString() });
+          localStorage.setItem("graceAutoBookmarks", JSON.stringify(bookmarks.slice(0, 10)));
+        }
 
         playVerses();
       } catch (error) {
@@ -153,17 +161,22 @@
       }
     }
 
+    function waitForVoices(callback) {
+      let voices = speechSynthesis.getVoices();
+      if (voices.length) return callback();
+      speechSynthesis.onvoiceschanged = callback;
+    }
+
     window.onload = () => {
       if (localStorage.getItem("graceTheme") === "dark") {
         document.body.classList.add("night-mode");
         document.getElementById("themeBtn").textContent = "☀️ Theme";
       }
-      speechSynthesis.onvoiceschanged = () => {
+      waitForVoices(() => {
         selectedVoice = speechSynthesis.getVoices().find(v => v.lang.startsWith("en")) || null;
-      };
-      loadScripture();
+        loadScripture();
+      });
     };
   </script>
 </body>
 </html>
-
