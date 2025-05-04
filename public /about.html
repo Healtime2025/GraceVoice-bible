@@ -12,6 +12,7 @@
       padding: 30px;
       text-align: center;
       margin-bottom: 80px;
+      transition: background 0.3s, color 0.3s;
     }
     h1 {
       font-size: 28px;
@@ -23,6 +24,16 @@
       color: #333;
       max-width: 700px;
       margin: 0 auto 20px;
+    }
+    .night-mode {
+      background-color: #1c1c1c;
+      color: #e0e0e0;
+    }
+    .night-mode p {
+      color: #ccc;
+    }
+    .night-mode h1 {
+      color: #f0f0f0;
     }
     .nav-bar {
       position: fixed;
@@ -45,20 +56,29 @@
       border-radius: 6px;
       cursor: pointer;
     }
+    .night-mode .nav-bar {
+      background: #2b2b2b;
+    }
+    .night-mode .nav-bar button {
+      background: #444;
+      color: #fff;
+    }
+    .night-mode .nav-bar button:hover {
+      background: #555;
+    }
     .nav-bar button:hover {
       background: #f0f0f0;
     }
   </style>
 </head>
 <body>
-
   <h1>ℹ️ About GraceVoice</h1>
 
   <p><strong>GraceVoice</strong> is a voice-powered Bible reader made for ease, comfort, and clarity.</p>
 
   <p>It helps you hear the Word of God aloud using simple voice commands like:</p>
 
-  <p><em>“Read Matthew chapter 5”</em> <br> <em>“Repeat”</em> or <em>“Stop”</em></p>
+  <p><em>“Read Matthew chapter 5”</em><br><em>“Repeat”</em> or <em>“Stop”</em></p>
 
   <p>You can also manually choose a Bible chapter and hear it read in a clear, friendly voice. Great for elders, kids, or anyone who wants to listen instead of reading.</p>
 
@@ -72,5 +92,13 @@
     <button onclick="window.location.href='settings.html'">⚙️ Settings</button>
   </div>
 
+  <script>
+    window.onload = () => {
+      if (localStorage.getItem("graceTheme") === "dark") {
+        document.body.classList.add("night-mode");
+      }
+    };
+  </script>
 </body>
 </html>
+
