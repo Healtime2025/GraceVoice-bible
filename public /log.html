@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📚 Reading History | GraceVoice</title>
   <link rel="manifest" href="manifest.json">
   <style>
@@ -11,10 +11,12 @@
       background: #f4f4f4;
       text-align: center;
       padding: 30px;
+      margin-bottom: 80px;
     }
     h1 {
-      font-size: 28px;
+      font-size: 30px;
       color: #2c3e50;
+      margin-bottom: 20px;
     }
     .log-item {
       background: white;
@@ -26,12 +28,13 @@
       text-align: left;
     }
     .timestamp {
-      font-size: 12px;
+      font-size: 14px;
       color: #777;
+      margin-top: 5px;
     }
     button {
       padding: 10px 20px;
-      margin: 10px 5px;
+      margin-top: 15px;
       border: none;
       border-radius: 6px;
       background: #1976d2;
@@ -60,6 +63,7 @@
   </style>
 </head>
 <body>
+
   <h1>📚 My Reading History</h1>
   <div id="historyList">Loading...</div>
   <div id="footerNav"></div>
@@ -86,12 +90,14 @@
       });
     }
 
+    // Load footer nav
     fetch("nav-bar.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("footerNav").innerHTML = html;
       });
 
+    // Theme support
     window.onload = () => {
       if (localStorage.getItem("graceTheme") === "dark") {
         document.body.classList.add("night-mode");
