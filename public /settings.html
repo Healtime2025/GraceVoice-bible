@@ -105,6 +105,10 @@
       <button onclick="document.getElementById('importFile').click()">📥 Import Settings</button>
     </div>
 
+    <div style="margin-top: 10px;">
+      <button onclick="resetSettings()">🔒 Reset Settings</button>
+    </div>
+
     <div class="voice-guide">
       <h3>🎙️ Voice Commands Guide</h3>
       <p>
@@ -155,7 +159,6 @@
         speechSynthesis.speak(test);
       };
 
-      // 🔊 Test saved voice after load
       if (savedIndex && voices[savedIndex]) {
         const greet = new SpeechSynthesisUtterance("GraceVoice is ready.");
         greet.voice = voices[savedIndex];
@@ -197,6 +200,16 @@
         }
       };
       reader.readAsText(file);
+    }
+
+    function resetSettings() {
+      if (confirm("This will reset your theme, voice, and translation settings. Continue?")) {
+        localStorage.removeItem("graceTheme");
+        localStorage.removeItem("graceVoiceIndex");
+        localStorage.removeItem("graceTranslation");
+        alert("✅ Settings reset to default.");
+        location.reload();
+      }
     }
 
     window.onload = () => {
