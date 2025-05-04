@@ -1,42 +1,62 @@
 # 📖 GraceVoice
 
-**GraceVoice** is your intelligent, voice-powered scripture assistant—bringing hands-free Bible reading to anyone, anywhere. Built for accessibility, clarity, and simplicity, it enables natural language interaction and large-font verse display with offline support.
+**GraceVoice** is your intelligent, voice-powered scripture assistant—bringing hands-free Bible reading to anyone, anywhere. Built for clarity, accessibility, and simplicity, it enables natural language interaction, large-font display, and offline usage on all major platforms.
 
 ---
 
 ## 🌟 Features
 
-- 🎙️ **Natural Voice Commands**
+- 🎙️ **Natural Voice Commands**  
+  Say things like:
   - “Read Genesis 1 verse 1”
   - “Read John 3 verse 16 to 18”
   - “Repeat”, “Stop”, or “Pause”
-- 🔊 **Text-to-Speech (TTS)** playback using your browser
-- 👁️ **Large Font Verse Display** – ideal for elderly or visually impaired users
-- 📝 **Verse Bookmarks and Personal Notes**
-- 🌐 **Offline Support** – powered by a Service Worker
-- 📲 **Installable PWA** – add to home screen on Android, iPhone, or desktop
-- 🔒 **Secure API Proxy** – pulls scripture data from [Bible-API.com](https://bible-api.com) with KJV and WEB translation support
-- 🧠 **Fallback Engine** – uses Google Sheets or Drive HTML files when Bible API is unreachable (GraceVault edition)
+
+- 🔊 **Text-to-Speech (TTS)**  
+  - Reads scripture aloud using your device's available voices
+
+- 👁️ **Large Font Verse Display**  
+  - Ideal for elderly or visually impaired users
+
+- 🔖 **Verse Bookmarks and Personal Notes**  
+  - Save favorite verses and add notes with timestamps
+
+- 🌗 **Night Mode**  
+  - Toggle between light and dark themes for better visibility
+
+- 🌐 **Offline Support**  
+  - Works without internet after first load (via service worker)
+
+- 📲 **Installable PWA**  
+  - Add to your home screen like an app (Android, iPhone, desktop)
+
+- 🔒 **Secure API Proxy**  
+  - Fetches scripture via `/api/fetch-script.js` with translation support
+
+- 🧠 **GraceVault Fallback Engine**  
+  - Uses local Google Drive HTML backups when Bible-API.com is down *(optional)*
 
 ---
 
-## 🛠️ Project Structure
+## 📁 Project Structure
 
 ```bash
 .
 ├── api/
-│   └── fetch-script.js        # Proxy to Bible-API.com or GraceVault fallback
+│   └── fetch-script.js        # Proxy to Bible API or GraceVault fallback
 ├── public/
-│   ├── index.html             # Main interface: voice + manual reading
-│   ├── reader.html            # Auto-reader (URL: ?book=John&chapter=3)
+│   ├── index.html             # Main voice-enabled interface
+│   ├── reader.html            # Auto-reader with voice playback
 │   ├── bookmarks.html         # Saved verse bookmarks
-│   ├── notes.html             # Personal note-taking interface
-│   ├── settings.html          # Voice + theme settings
+│   ├── history.html           # Reading history (auto-logged)
+│   ├── notes.html             # Personal note journal
+│   ├── settings.html          # Theme, voice, translation options
+│   ├── nav-bar.html           # Universal bottom navigation bar
+│   ├── manifest.json          # PWA manifest
 │   ├── icon-192.png
 │   ├── icon-512.png
-│   ├── manifest.json          # PWA manifest
-│   └── sw.js                  # Offline service worker
-├── vercel.json                # Route rewrites and API settings
-├── package.json               # Project metadata and dependencies
+│   └── sw.js                  # Service worker for offline support
+├── vercel.json                # Redirects and rewrites for API routing
+├── package.json               # Metadata and optional dependencies
 ├── .gitignore
-└── README.md                  # This file
+└── README.md                  # You're reading it
