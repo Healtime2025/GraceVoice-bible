@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/read",
+      "destination": "/reader.html"
+    },
+    {
+      "source": "/voice",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
