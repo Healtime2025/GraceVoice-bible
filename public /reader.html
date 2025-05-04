@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GraceVoice Reader</title>
   <link rel="manifest" href="manifest.json">
   <style>
@@ -65,14 +65,17 @@
 </head>
 <body>
   <h1>📖 GraceVoice Reader</h1>
-  <div id="bookRef"></div>
-  <div class="verse-box" id="verseBox">Loading scripture...</div>
+  <div id="bookRef">Loading reference...</div>
+  <div class="verse-box" id="verseBox">Please wait...</div>
   <div>
     <button onclick="playVerses()">▶️ Read</button>
     <button onclick="repeatVerses()">🔁 Repeat</button>
     <button onclick="stopReading()">⏹️ Stop</button>
     <button onclick="toggleTheme()">🌓 Theme</button>
   </div>
+
+  <!-- Footer nav placeholder -->
+  <div id="footerNav"></div>
 
   <script>
     const verseBox = document.getElementById("verseBox");
@@ -90,14 +93,14 @@
       utterance.voice = selectedVoice || speechSynthesis.getVoices()[0];
       utterance.rate = 0.95;
       utterance.pitch = 1;
-      speechSynthesis.cancel(); // Ensure restart
+      speechSynthesis.cancel();
       speechSynthesis.speak(utterance);
       verseBox.scrollIntoView({ behavior: "smooth" });
     }
 
     function repeatVerses() {
       stopReading();
-      setTimeout(() => playVerses(), 100); // Ensure cancel before play
+      setTimeout(playVerses, 100);
     }
 
     function stopReading() {
@@ -129,15 +132,8 @@
         }
 
         bookRef.textContent = `${data.book} Chapter ${data.chapter} (${translation.toUpperCase()})`;
-
-        fullText = Object.entries(data.verses)
-          .map(([v, t]) => `${v}. ${t}`)
-          .join(" ");
-
-        verseBox.innerHTML = Object.entries(data.verses)
-          .map(([v, t]) => `<p><strong>${v}</strong> ${t}</p>`)
-          .join("");
-
+        fullText = Object.entries(data.verses).map(([v, t]) => `${v}. ${t}`).join(" ");
+        verseBox.innerHTML = Object.entries(data.verses).map(([v, t]) => `<p><strong>${v}</strong> ${t}</p>`).join("");
         playVerses(); // Auto-read on load
       } catch (error) {
         verseBox.textContent = "❌ Error loading scripture.";
@@ -146,12 +142,23 @@
     }
 
     window.onload = () => {
+      // Theme setting
       if (localStorage.getItem("graceTheme") === "dark") {
         document.body.classList.add("night-mode");
       }
+
+      // Voice setup
       speechSynthesis.onvoiceschanged = () => {
         selectedVoice = speechSynthesis.getVoices().find(v => v.lang.startsWith("en")) || null;
       };
+
+      // Load nav bar
+      fetch("nav-bar.html")
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById("footerNav").innerHTML = html;
+        });
+
       loadScripture();
     };
   </script>
