@@ -11,11 +11,13 @@
       background: #f4f4f4;
       padding: 30px;
       text-align: center;
+      margin-bottom: 80px;
+      transition: background 0.3s, color 0.3s;
     }
     h1 {
       font-size: 28px;
       color: #2c3e50;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
     button {
       padding: 10px 20px;
@@ -61,19 +63,48 @@
     .night-mode button:hover {
       background-color: #555;
     }
-    .top-buttons {
-      margin-bottom: 20px;
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #1976d2;
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    }
+    .nav-bar button {
+      background: white;
+      color: #1976d2;
+      border: none;
+      padding: 10px 18px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .night-mode .nav-bar {
+      background: #2b2b2b;
+    }
+    .night-mode .nav-bar button {
+      background: #444;
+      color: #fff;
+    }
+    .night-mode .nav-bar button:hover {
+      background: #555;
     }
   </style>
 </head>
 <body>
-  <div class="top-buttons">
-    <button onclick="window.location.href='index.html'">🏠 Home</button>
-    <button onclick="toggleTheme()">🌓 Toggle Theme</button>
-  </div>
-
   <h1>🔖 My Bookmarks</h1>
   <div id="bookmarkList">Loading...</div>
+
+  <div class="nav-bar">
+    <button onclick="window.location.href='index.html'">🏠 Home</button>
+    <button onclick="toggleTheme()">🌓 Theme</button>
+    <button onclick="window.location.href='settings.html'">⚙️ Settings</button>
+  </div>
 
   <script>
     function loadBookmarks() {
@@ -128,3 +159,4 @@
   </script>
 </body>
 </html>
+
