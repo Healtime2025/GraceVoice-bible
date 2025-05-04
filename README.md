@@ -1,20 +1,22 @@
 # 📖 GraceVoice
 
-**GraceVoice** is a voice-powered scripture assistant designed to bring hands-free Bible reading to anyone, anywhere. Built with accessibility and clarity in mind, it supports both natural voice commands and manual selection for reading scripture aloud in large text.
+**GraceVoice** is your intelligent, voice-powered scripture assistant—bringing hands-free Bible reading to anyone, anywhere. Built for accessibility, clarity, and simplicity, it enables natural language interaction and large-font verse display with offline support.
 
 ---
 
-## 🌍 Features
+## 🌟 Features
 
-- 🎙️ **Natural voice commands**, such as:
+- 🎙️ **Natural Voice Commands**
   - “Read Genesis 1 verse 1”
-  - “Read John 3 verses 16 to 18”
-  - “Repeat”, “Stop”, or “Next”
-- 🔊 **Text-to-Speech** playback using your browser
-- 👓 **Large-font verse display** – ideal for elderly and low-vision users
-- 📱 **PWA-ready** – installable on Android, iPhone, or desktop
-- 🌐 **Offline support** via service worker
-- ⚙️ **Secure API proxy** to [Bible-API.com](https://bible-api.com) with KJV + WEB support
+  - “Read John 3 verse 16 to 18”
+  - “Repeat”, “Stop”, or “Pause”
+- 🔊 **Text-to-Speech (TTS)** playback using your browser
+- 👁️ **Large Font Verse Display** – ideal for elderly or visually impaired users
+- 📝 **Verse Bookmarks and Personal Notes**
+- 🌐 **Offline Support** – powered by a Service Worker
+- 📲 **Installable PWA** – add to home screen on Android, iPhone, or desktop
+- 🔒 **Secure API Proxy** – pulls scripture data from [Bible-API.com](https://bible-api.com) with KJV and WEB translation support
+- 🧠 **Fallback Engine** – uses Google Sheets or Drive HTML files when Bible API is unreachable (GraceVault edition)
 
 ---
 
@@ -23,15 +25,18 @@
 ```bash
 .
 ├── api/
-│   └── fetch-script.js        # Proxy to Bible-API.com (KJV + WEB)
+│   └── fetch-script.js        # Proxy to Bible-API.com or GraceVault fallback
 ├── public/
-│   ├── index.html             # Voice + manual scripture interface
-│   ├── reader.html            # Auto reader (read?book=John&chapter=3)
+│   ├── index.html             # Main interface: voice + manual reading
+│   ├── reader.html            # Auto-reader (URL: ?book=John&chapter=3)
+│   ├── bookmarks.html         # Saved verse bookmarks
+│   ├── notes.html             # Personal note-taking interface
+│   ├── settings.html          # Voice + theme settings
 │   ├── icon-192.png
 │   ├── icon-512.png
-│   ├── manifest.json
-│   └── sw.js
-├── vercel.json                # Clean route rewrites
-├── package.json               # Metadata + node-fetch
-├── .gitignore                 # Clean repo settings
-└── README.md
+│   ├── manifest.json          # PWA manifest
+│   └── sw.js                  # Offline service worker
+├── vercel.json                # Route rewrites and API settings
+├── package.json               # Project metadata and dependencies
+├── .gitignore
+└── README.md                  # This file
