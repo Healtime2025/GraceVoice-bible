@@ -1,13 +1,13 @@
 // pages/api/fetch-script.js
 
 export default async function handler(req, res) {
-  const { book, chapter } = req.query;
+  const { book, chapter, translation = "web" } = req.query;
 
   if (!book || !chapter) {
     return res.status(400).json({ error: "Missing book or chapter." });
   }
 
-  const scriptUrl = `https://script.google.com/macros/s/AKfycbxkGuDg_j0pU5TSZe87arP2JtVcoFZaCBQiEKMaTUyyPlVmk8XBFC0jpB3TyctCIA0aqQ/exec?book=${encodeURIComponent(book)}&chapter=${encodeURIComponent(chapter)}`;
+  const scriptUrl = `https://script.google.com/macros/s/AKfycbxkGuDg_j0pU5TSZe87arP2JtVcoFZaCBQiEKMaTUyyPlVmk8XBFC0jpB3TyctCIA0aqQ/exec?book=${encodeURIComponent(book)}&chapter=${encodeURIComponent(chapter)}&translation=${encodeURIComponent(translation)}`;
 
   try {
     const response = await fetch(scriptUrl);
@@ -19,6 +19,9 @@ export default async function handler(req, res) {
 
     return res.status(200).json(data);
   } catch (err) {
-    return res.status(500).json({ error: "GraceVoice proxy error", details: err.message });
+    return res.status(500).json({
+      error: "GraceVoice proxy error",
+      details: err.message
+    });
   }
 }
