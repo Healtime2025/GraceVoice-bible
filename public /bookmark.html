@@ -61,10 +61,17 @@
     .night-mode button:hover {
       background-color: #555;
     }
+    .top-buttons {
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
-  <button onclick="window.location.href='index.html'">🏠 Home</button>
+  <div class="top-buttons">
+    <button onclick="window.location.href='index.html'">🏠 Home</button>
+    <button onclick="toggleTheme()">🌓 Toggle Theme</button>
+  </div>
+
   <h1>🔖 My Bookmarks</h1>
   <div id="bookmarkList">Loading...</div>
 
@@ -86,10 +93,18 @@
           <p>${b.text}</p>
           <p><strong>📝 Note:</strong> ${b.note || "(none)"}</p>
           <p><small>⏱️ Saved: ${new Date(b.timestamp).toLocaleString()}</small></p>
+          <button onclick="speak('${b.text.replace(/'/g, "\\'")}')">🔊 Read</button>
           <button onclick="removeBookmark(${index})">❌ Remove</button>
         `;
         container.appendChild(div);
       });
+    }
+
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.pitch = 1;
+      utterance.rate = 0.95;
+      speechSynthesis.speak(utterance);
     }
 
     function removeBookmark(index) {
@@ -99,7 +114,11 @@
       loadBookmarks();
     }
 
-    // Night mode
+    function toggleTheme() {
+      document.body.classList.toggle("night-mode");
+      localStorage.setItem("graceTheme", document.body.classList.contains("night-mode") ? "dark" : "light");
+    }
+
     window.onload = () => {
       if (localStorage.getItem("graceTheme") === "dark") {
         document.body.classList.add("night-mode");
