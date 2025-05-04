@@ -1,27 +1,31 @@
 // 📖 GraceVoice Service Worker
 
-const CACHE_NAME = "gracevoice-cache-v1";
-const FILES_TO_CACHE = [
+const CACHE_NAME = "gracevoice-cache-v2";
+const STATIC_FILES = [
   "/",
   "/index.html",
   "/manifest.json",
   "/icon-192.png",
-  "/icon-512.png"
+  "/icon-512.png",
+  "/reader.html",
+  "/settings.html",
+  "/bookmarks.html",
+  "/notes.html"
 ];
 
-// ✅ Install: Pre-cache static assets
+// ✅ Install: Cache static app shell
 self.addEventListener("install", (event) => {
   console.log("[GraceVoice SW] Installing...");
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("[GraceVoice SW] Caching shell files...");
-      return cache.addAll(FILES_TO_CACHE);
+      console.log("[GraceVoice SW] Caching static shell...");
+      return cache.addAll(STATIC_FILES);
     })
   );
   self.skipWaiting();
 });
 
-// 🔁 Activate: Clear outdated caches
+// 🔁 Activate: Remove outdated cache versions
 self.addEventListener("activate", (event) => {
   console.log("[GraceVoice SW] Activating...");
   event.waitUntil(
@@ -39,13 +43,34 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// 🌐 Fetch: Serve cached resources when offline
+// 🌐 Fetch: Serve static or dynamic content
 self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+
+  // 📘 Dynamic caching for scripture API
+  if (url.pathname.startsWith("/api/fetch-script.js")) {
+    event.respondWith(
+      caches.open("gracevoice-dynamic").then((cache) =>
+        fetch(event.request)
+          .then((response) => {
+            cache.put(event.request, response.clone()); // 🧠 Save future offline
+            return response;
+          })
+          .catch(() => {
+            return cache.match(event.request) ||
+              new Response("⚠️ You're offline and this scripture was never read.");
+          })
+      )
+    );
+    return;
+  }
+
+  // 🧱 Static shell fallback
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
-    }).catch(() => {
-      return new Response("⚠️ You're offline, and the resource isn't cached.");
-    })
+    caches.match(event.request).then((cachedResponse) =>
+      cachedResponse || fetch(event.request).catch(() =>
+        new Response("⚠️ You're offline and the requested file is not cached.")
+      )
+    )
   );
 });
