@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GraceVoice Reader</title>
   <link rel="manifest" href="manifest.json">
   <style>
@@ -65,17 +65,14 @@
 </head>
 <body>
   <h1>📖 GraceVoice Reader</h1>
-  <div id="bookRef">Loading reference...</div>
-  <div class="verse-box" id="verseBox">Please wait...</div>
+  <div id="bookRef"></div>
+  <div class="verse-box" id="verseBox">Loading scripture...</div>
   <div>
     <button onclick="playVerses()">▶️ Read</button>
     <button onclick="repeatVerses()">🔁 Repeat</button>
     <button onclick="stopReading()">⏹️ Stop</button>
-    <button onclick="toggleTheme()">🌓 Theme</button>
+    <button id="themeBtn" onclick="toggleTheme()">🌙 Theme</button>
   </div>
-
-  <!-- Footer nav placeholder -->
-  <div id="footerNav"></div>
 
   <script>
     const verseBox = document.getElementById("verseBox");
@@ -100,7 +97,7 @@
 
     function repeatVerses() {
       stopReading();
-      setTimeout(playVerses, 100);
+      setTimeout(() => playVerses(), 100);
     }
 
     function stopReading() {
@@ -108,8 +105,12 @@
     }
 
     function toggleTheme() {
-      document.body.classList.toggle("night-mode");
-      localStorage.setItem("graceTheme", document.body.classList.contains("night-mode") ? "dark" : "light");
+      const body = document.body;
+      const btn = document.getElementById("themeBtn");
+      body.classList.toggle("night-mode");
+      const isDark = body.classList.contains("night-mode");
+      btn.textContent = isDark ? "☀️ Theme" : "🌙 Theme";
+      localStorage.setItem("graceTheme", isDark ? "dark" : "light");
     }
 
     async function loadScripture() {
@@ -132,9 +133,20 @@
         }
 
         bookRef.textContent = `${data.book} Chapter ${data.chapter} (${translation.toUpperCase()})`;
-        fullText = Object.entries(data.verses).map(([v, t]) => `${v}. ${t}`).join(" ");
-        verseBox.innerHTML = Object.entries(data.verses).map(([v, t]) => `<p><strong>${v}</strong> ${t}</p>`).join("");
-        playVerses(); // Auto-read on load
+
+        fullText = Object.entries(data.verses)
+          .map(([v, t]) => `${v}. ${t}`)
+          .join(" ");
+
+        verseBox.innerHTML = Object.entries(data.verses)
+          .map(([v, t]) => `<p><strong>${v}</strong> ${t}</p>`)
+          .join("");
+
+        const bookmarks = JSON.parse(localStorage.getItem("graceAutoBookmarks") || "[]");
+        bookmarks.unshift({ book, chapter, timestamp: new Date().toISOString() });
+        localStorage.setItem("graceAutoBookmarks", JSON.stringify(bookmarks.slice(0, 10)));
+
+        playVerses();
       } catch (error) {
         verseBox.textContent = "❌ Error loading scripture.";
         console.error(error);
@@ -142,25 +154,16 @@
     }
 
     window.onload = () => {
-      // Theme setting
       if (localStorage.getItem("graceTheme") === "dark") {
         document.body.classList.add("night-mode");
+        document.getElementById("themeBtn").textContent = "☀️ Theme";
       }
-
-      // Voice setup
       speechSynthesis.onvoiceschanged = () => {
         selectedVoice = speechSynthesis.getVoices().find(v => v.lang.startsWith("en")) || null;
       };
-
-      // Load nav bar
-      fetch("nav-bar.html")
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById("footerNav").innerHTML = html;
-        });
-
       loadScripture();
     };
   </script>
 </body>
 </html>
+
