@@ -63,7 +63,6 @@
     .night-mode button:hover {
       background: #555;
     }
-
     @media (max-width: 600px) {
       .verse-box {
         font-size: 20px;
@@ -96,7 +95,7 @@
     function playVerses(text = fullText) {
       if (!text) return;
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = selectedVoice || speechSynthesis.getVoices()[0];
+      utterance.voice = selectedVoice || speechSynthesis.getVoices()[0] || null;
       utterance.rate = 0.95;
       utterance.pitch = 1;
       speechSynthesis.cancel();
@@ -106,7 +105,7 @@
 
     function repeatVerses() {
       stopReading();
-      setTimeout(() => playVerses(), 300); // slightly reduced delay
+      setTimeout(() => playVerses(), 300);
     }
 
     function stopReading() {
@@ -146,7 +145,6 @@
           .map(([v, t]) => `<p><strong>${v}</strong> ${t}</p>`)
           .join("");
 
-        // Add to reading history (no duplicate entries for same chapter)
         const bookmarks = JSON.parse(localStorage.getItem("graceAutoBookmarks") || "[]");
         const alreadyLogged = bookmarks.find(b => b.book === book && b.chapter === chapter);
         if (!alreadyLogged) {
@@ -157,12 +155,12 @@
         playVerses();
       } catch (error) {
         verseBox.textContent = "❌ Error loading scripture.";
-        console.error(error);
+        console.error("[GraceVoice] Load error:", error);
       }
     }
 
     function waitForVoices(callback) {
-      let voices = speechSynthesis.getVoices();
+      const voices = speechSynthesis.getVoices();
       if (voices.length) return callback();
       speechSynthesis.onvoiceschanged = callback;
     }
@@ -172,8 +170,10 @@
         document.body.classList.add("night-mode");
         document.getElementById("themeBtn").textContent = "☀️ Theme";
       }
+
       waitForVoices(() => {
-        selectedVoice = speechSynthesis.getVoices().find(v => v.lang.startsWith("en")) || null;
+        const voices = speechSynthesis.getVoices();
+        selectedVoice = voices.find(v => v.lang.startsWith("en")) || voices[0] || null;
         loadScripture();
       });
     };
