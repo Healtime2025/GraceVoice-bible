@@ -118,7 +118,70 @@
     <select id="bookSelect">
       <option value="">-- Select Book --</option>
       <option value="GEN">Genesis</option>
-      <!-- other books omitted for brevity -->
+      <option value="EXO">Exodus</option>
+      <option value="LEV">Leviticus</option>
+      <option value="NUM">Numbers</option>
+      <option value="DEU">Deuteronomy</option>
+      <option value="JOS">Joshua</option>
+      <option value="JDG">Judges</option>
+      <option value="RUT">Ruth</option>
+      <option value="1SA">1 Samuel</option>
+      <option value="2SA">2 Samuel</option>
+      <option value="1KI">1 Kings</option>
+      <option value="2KI">2 Kings</option>
+      <option value="1CH">1 Chronicles</option>
+      <option value="2CH">2 Chronicles</option>
+      <option value="EZR">Ezra</option>
+      <option value="NEH">Nehemiah</option>
+      <option value="EST">Esther</option>
+      <option value="JOB">Job</option>
+      <option value="PSA">Psalms</option>
+      <option value="PRO">Proverbs</option>
+      <option value="ECC">Ecclesiastes</option>
+      <option value="SNG">Song of Solomon</option>
+      <option value="ISA">Isaiah</option>
+      <option value="JER">Jeremiah</option>
+      <option value="LAM">Lamentations</option>
+      <option value="EZK">Ezekiel</option>
+      <option value="DAN">Daniel</option>
+      <option value="HOS">Hosea</option>
+      <option value="JOL">Joel</option>
+      <option value="AMO">Amos</option>
+      <option value="OBA">Obadiah</option>
+      <option value="JON">Jonah</option>
+      <option value="MIC">Micah</option>
+      <option value="NAH">Nahum</option>
+      <option value="HAB">Habakkuk</option>
+      <option value="ZEP">Zephaniah</option>
+      <option value="HAG">Haggai</option>
+      <option value="ZEC">Zechariah</option>
+      <option value="MAL">Malachi</option>
+      <option value="MAT">Matthew</option>
+      <option value="MRK">Mark</option>
+      <option value="LUK">Luke</option>
+      <option value="JHN">John</option>
+      <option value="ACT">Acts</option>
+      <option value="ROM">Romans</option>
+      <option value="1CO">1 Corinthians</option>
+      <option value="2CO">2 Corinthians</option>
+      <option value="GAL">Galatians</option>
+      <option value="EPH">Ephesians</option>
+      <option value="PHP">Philippians</option>
+      <option value="COL">Colossians</option>
+      <option value="1TH">1 Thessalonians</option>
+      <option value="2TH">2 Thessalonians</option>
+      <option value="1TI">1 Timothy</option>
+      <option value="2TI">2 Timothy</option>
+      <option value="TIT">Titus</option>
+      <option value="PHM">Philemon</option>
+      <option value="HEB">Hebrews</option>
+      <option value="JAS">James</option>
+      <option value="1PE">1 Peter</option>
+      <option value="2PE">2 Peter</option>
+      <option value="1JN">1 John</option>
+      <option value="2JN">2 John</option>
+      <option value="3JN">3 John</option>
+      <option value="JUD">Jude</option>
       <option value="REV">Revelation</option>
     </select>
     <input id="chapterInput" type="number" placeholder="Chapter" min="1" />
@@ -142,45 +205,35 @@
   </div>
 
 <script>
-function readSelected() {
-  const book = document.getElementById("bookSelect").value;
-  const chapter = document.getElementById("chapterInput").value;
-  const startVerse = document.getElementById("startVerseInput").value;
-  const endVerse = document.getElementById("endVerseInput").value;
-  const translation = localStorage.getItem("graceTranslation") || "web";
+  function readSelected() {
+    const book = document.getElementById("bookSelect").value;
+    const chapter = document.getElementById("chapterInput").value;
+    const start = parseInt(document.getElementById("startVerseInput").value);
+    const end = parseInt(document.getElementById("endVerseInput").value);
+    const translation = localStorage.getItem("graceTranslation") || "web";
 
-  if (!book || !chapter || !startVerse) {
-    alert("Please select book, chapter, and starting verse.");
-    return;
+    if (!book || !chapter || !start || !end) {
+      alert("❗ Please fill in book, chapter, and verse range.");
+      return;
+    }
+
+    fetch(`/api/fetch-script.js?book=${book}&chapter=${chapter}&translation=${translation}`)
+      .then(res => res.json())
+      .then(data => {
+        let versesText = '';
+        for (let i = start; i <= end; i++) {
+          if (data.verses[i]) {
+            versesText += `${i}. ${data.verses[i]} `;
+          }
+        }
+        const utterance = new SpeechSynthesisUtterance(versesText);
+        const voices = speechSynthesis.getVoices();
+        const savedIndex = localStorage.getItem("graceVoiceIndex") || 0;
+        utterance.voice = voices[savedIndex] || voices[0];
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
+      });
   }
-
-  fetch(`/api/fetch-script.js?book=${book}&chapter=${chapter}&translation=${translation}`)
-    .then(res => res.json())
-    .then(data => {
-      const verses = data.verses || {};
-      let selectedText = "";
-      for (let i = parseInt(startVerse); i <= (endVerse ? parseInt(endVerse) : parseInt(startVerse)); i++) {
-        if (verses[i]) selectedText += `${i}. ${verses[i]} `;
-      }
-
-      if (!selectedText) {
-        alert("No verses found for this selection.");
-        return;
-      }
-
-      const utterance = new SpeechSynthesisUtterance(selectedText);
-      const voices = speechSynthesis.getVoices();
-      const index = localStorage.getItem("graceVoiceIndex");
-      if (index && voices[index]) utterance.voice = voices[index];
-
-      speechSynthesis.cancel();
-      speechSynthesis.speak(utterance);
-    })
-    .catch(err => {
-      console.error("Error reading selection:", err);
-      alert("❌ Failed to fetch or read selected verses.");
-    });
-}
 </script>
 </body>
 </html>
