@@ -1,37 +1,186 @@
-// 📖 GraceVoice Scripture Proxy API
-// Forwards book & chapter requests to Google Apps Script backend
-
-export default async function handler(req, res) {
-  const { book, chapter, translation = "web" } = req.query;
-
-  // 🚫 Validate inputs
-  if (!book || !chapter) {
-    return res.status(400).json({ error: "❌ Missing book or chapter." });
-  }
-
-  const safeBook = encodeURIComponent(book.trim());
-  const safeChapter = encodeURIComponent(chapter.trim());
-  const safeTranslation = encodeURIComponent(translation.trim());
-
-  const scriptUrl = `https://script.google.com/macros/s/AKfycbxkGuDg_j0pU5TSZe87arP2JtVcoFZaCBQiEKMaTUyyPlVmk8XBFC0jpB3TyctCIA0aqQ/exec?book=${safeBook}&chapter=${safeChapter}&translation=${safeTranslation}`;
-
-  try {
-    const response = await fetch(scriptUrl);
-    const data = await response.json();
-
-    // 📭 No verses found
-    if (!data.verses || Object.keys(data.verses).length === 0) {
-      return res.status(404).json({ error: `No verses found for ${book} ${chapter}.` });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GraceVoice</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      text-align: center;
+      padding: 40px;
     }
+    h1 {
+      font-size: 32px;
+      color: #2c3e50;
+    }
+    .scripture-box {
+      margin: 30px auto;
+      padding: 20px;
+      max-width: 800px;
+      background: white;
+      border-radius: 10px;
+      font-size: 24px;
+      line-height: 1.6;
+      color: #333;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+    button {
+      padding: 15px 25px;
+      font-size: 18px;
+      margin: 10px;
+      border: none;
+      background: #1976d2;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #145a9e;
+    }
+    .bookmark-btn {
+      font-size: 14px;
+      padding: 4px 8px;
+      margin-left: 10px;
+      background: #ddd;
+      color: #444;
+      border-radius: 4px;
+    }
+    .bookmark-btn:hover {
+      background: #ccc;
+    }
+    #voiceFeedback {
+      margin-top: 10px;
+      font-style: italic;
+      color: #555;
+    }
+    select, input[type="number"] {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .verse-line {
+      display: block;
+      margin: 8px 0;
+    }
+    .active-verse {
+      background-color: #e0f0ff;
+      font-weight: bold;
+      padding: 4px;
+      border-radius: 5px;
+    }
+    .night-mode {
+      background-color: #1c1c1c;
+      color: #e0e0e0;
+    }
+    .night-mode .scripture-box {
+      background-color: #2b2b2b;
+      color: #e0e0e0;
+    }
+    .night-mode button {
+      background-color: #333;
+      color: #fff;
+    }
+    .night-mode button:hover {
+      background-color: #555;
+    }
+    .night-mode select, .night-mode input[type="number"] {
+      background-color: #444;
+      color: #fff;
+      border-color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>📖 GraceVoice</h1>
 
-    // ✅ Success
-    return res.status(200).json(data);
-  } catch (err) {
-    // 🛑 Catch & log error
-    console.error("GraceVoice proxy error:", err.message);
-    return res.status(500).json({
-      error: "GraceVoice proxy error",
-      details: err.message
-    });
+  <div>
+    <label><input type="checkbox" id="themeToggle" onchange="toggleTheme()"> Night Mode</label>
+  </div>
+
+  <div>
+    <select id="voiceSelect"></select>
+  </div>
+
+  <div>
+    <button onclick="readText()">▶️ Start Reading (Full)</button>
+    <button onclick="stopSpeech()">⏹️ Stop/Pause</button>
+    <button onclick="readHighlighted()">🔍 Read with Highlight</button>
+    <button onclick="startVoice()">🎙️ Voice Command</button>
+  </div>
+
+  <div>
+    <select id="bookSelect">
+      <option value="">-- Select Book --</option>
+      <option value="GEN">Genesis</option>
+      <!-- other books omitted for brevity -->
+      <option value="REV">Revelation</option>
+    </select>
+    <input id="chapterInput" type="number" placeholder="Chapter" min="1" />
+    <input id="startVerseInput" type="number" placeholder="Start Verse" min="1" />
+    <input id="endVerseInput" type="number" placeholder="End Verse (optional)" min="1" />
+    <button onclick="readSelected()">📘 Read Selection</button>
+  </div>
+
+  <div class="scripture-box" id="verseDisplay">
+    Click "Start Reading" or use voice command
+  </div>
+
+  <div id="voiceFeedback"></div>
+
+  <div style="margin-top: 40px">
+    <button onclick="window.location.href='settings.html'">⚙️ Settings</button>
+    <button onclick="window.location.href='testimonies.html'">📣 Testimonies</button>
+    <button onclick="window.location.href='receive-christ.html'">🙏 Receive Christ</button>
+    <button onclick="window.location.href='prayer-wall.html'">🧱 Prayer Wall</button>
+    <button onclick="window.location.href='about.html'">ℹ️ About</button>
+  </div>
+
+<script>
+function readSelected() {
+  const book = document.getElementById("bookSelect").value;
+  const chapter = document.getElementById("chapterInput").value;
+  const startVerse = document.getElementById("startVerseInput").value;
+  const endVerse = document.getElementById("endVerseInput").value;
+  const translation = localStorage.getItem("graceTranslation") || "web";
+
+  if (!book || !chapter || !startVerse) {
+    alert("Please select book, chapter, and starting verse.");
+    return;
   }
+
+  fetch(`/api/fetch-script.js?book=${book}&chapter=${chapter}&translation=${translation}`)
+    .then(res => res.json())
+    .then(data => {
+      const verses = data.verses || {};
+      let selectedText = "";
+      for (let i = parseInt(startVerse); i <= (endVerse ? parseInt(endVerse) : parseInt(startVerse)); i++) {
+        if (verses[i]) selectedText += `${i}. ${verses[i]} `;
+      }
+
+      if (!selectedText) {
+        alert("No verses found for this selection.");
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(selectedText);
+      const voices = speechSynthesis.getVoices();
+      const index = localStorage.getItem("graceVoiceIndex");
+      if (index && voices[index]) utterance.voice = voices[index];
+
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+    })
+    .catch(err => {
+      console.error("Error reading selection:", err);
+      alert("❌ Failed to fetch or read selected verses.");
+    });
 }
+</script>
+</body>
+</html>
