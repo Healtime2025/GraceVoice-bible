@@ -1,16 +1,16 @@
 {
   "rewrites": [
-    {
-      "source": "/read",
-      "destination": "/reader.html"
-    },
-    {
-      "source": "/voice",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/reader", "destination": "/reader.html" },
+    { "source": "/settings", "destination": "/settings.html" },
+    { "source": "/bookmarks", "destination": "/bookmark.html" },
+    { "source": "/notes", "destination": "/notes.html" },
+    { "source": "/prayer-wall", "destination": "/prayer-wall.html" },
+    { "source": "/testimonies", "destination": "/testimonies.html" },
+    { "source": "/receive-christ", "destination": "/receive-christ.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/log", "destination": "/log.html" }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }
