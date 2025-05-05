@@ -12,7 +12,5 @@
     { "source": "/log", "destination": "/log.html" }
   ],
   "cleanUrls": true,
-  "trailingSlash": false,
-  "outputDirectory": "public",
-  "framework": "other"
+  "trailingSlash": false
 }
