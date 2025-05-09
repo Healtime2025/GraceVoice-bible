@@ -158,8 +158,8 @@
       const version = document.getElementById("versionSelect").value;
       const book = document.getElementById("bookSelect").value;
       const chapter = document.getElementById("chapterInput").value;
-
-      const url = `/bibles/${language}/${version}/${book}.json`;
+      
+      const url = `/bibles/${version}/${book}.json`;
       const response = await fetch(url);
       const data = await response.json();
       const verses = data[chapter];
