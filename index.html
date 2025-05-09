@@ -31,12 +31,6 @@
       text-align: left;
       min-height: 150px;
     }
-    .footer-buttons {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
     .control-buttons {
       display: flex;
       justify-content: center;
@@ -59,7 +53,6 @@
     <label for="versionSelect">Version:</label>
     <select id="versionSelect">
       <option value="KJV">King James Version (KJV)</option>
-      <option value="NIV">New International Version (NIV)</option>
     </select>
 
     <label for="bookSelect">Book:</label>
@@ -132,26 +125,21 @@
   <option value="Revelation">Revelation</option>
 </select>
 
-
     <label for="chapterInput">Chapter:</label>
     <input type="number" id="chapterInput" placeholder="Chapter" min="1">
-    <div>
-  <label for="start-verse">Start Verse:</label>
-  <input type="number" id="start-verse" placeholder="Enter start verse" min="1">
 
-  <label for="end-verse">End Verse:</label>
-  <input type="number" id="end-verse" placeholder="Enter end verse" min="1">
-</div>
+    <label for="start-verse">Start Verse:</label>
+    <input type="number" id="start-verse" placeholder="Enter start verse" min="1">
 
+    <label for="end-verse">End Verse:</label>
+    <input type="number" id="end-verse" placeholder="Enter end verse" min="1">
 
     <button onclick="loadBible()">📖 Load Bible</button>
   </div>
 
   <div class="control-buttons">
-    <button onclick="startReading()">🔺 Start Reading (Full)</button>
+    <button onclick="startReading()">🔺 Start Reading (Selected)</button>
     <button onclick="stopReading()">⏸️ Stop/Pause</button>
-    <button onclick="readHighlighted()">🔍 Read with Highlight</button>
-    <button onclick="startVoiceCommand()">🎤 Voice Command</button>
   </div>
 
   <div class="scripture-box" id="verseDisplay">
@@ -159,62 +147,45 @@
   </div>
 
   <script>
-    let selectedVoice = null;
-
     async function loadBible() {
-      const language = document.getElementById("languageSelect").value;
-      const version = document.getElementById("versionSelect").value;
       const book = document.getElementById("bookSelect").value;
       const chapter = document.getElementById("chapterInput").value;
-      
-      const url = `https://grace-voice-online.vercel.app/bibles/${language}/${version}/${book}.json`;
-      const response = await fetch(url);
-      const data = await response.json();
-      const verses = data[chapter];
+      const url = `https://grace-voice-online.vercel.app/bibles/English/KJV/${book}.json`;
 
-      let html = `<h2>${book} Chapter ${chapter}</h2>`;
-      for (const [verse, text] of Object.entries(verses)) {
-        html += `<p><strong>${verse}.</strong> ${text}</p>`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const verses = data[chapter];
+
+        let html = `<h2>${book} Chapter ${chapter}</h2>`;
+        for (const [verse, text] of Object.entries(verses)) {
+          html += `<p class='verse-line'><strong>${verse}.</strong> ${text}</p>`;
+        }
+
+        document.getElementById("verseDisplay").innerHTML = html;
+      } catch (error) {
+        document.getElementById("verseDisplay").innerHTML = `<p style='color:red;'>Error: ${error.message}</p>`;
       }
-
-      document.getElementById("verseDisplay").innerHTML = html;
     }
 
     function startReading() {
-      const text = document.getElementById("verseDisplay").innerText;
+      const startVerse = parseInt(document.getElementById("start-verse").value);
+      const endVerse = parseInt(document.getElementById("end-verse").value);
+      const verses = document.querySelectorAll(".verse-line");
+
+      let text = "";
+      verses.forEach(v => {
+        const verseNum = parseInt(v.querySelector("strong").innerText);
+        if (verseNum >= startVerse && verseNum <= endVerse) text += v.innerText + " ";
+      });
+
       const speech = new SpeechSynthesisUtterance(text);
-      speech.voice = selectedVoice || speechSynthesis.getVoices()[0];
       speechSynthesis.speak(speech);
     }
 
     function stopReading() {
       speechSynthesis.cancel();
     }
-
-    function readHighlighted() {
-      const verses = document.querySelectorAll(".verse-line");
-      let i = 0;
-
-      function next() {
-        if (i >= verses.length) return;
-        const text = verses[i].innerText;
-        const speech = new SpeechSynthesisUtterance(text);
-        speech.onend = () => { i++; next(); };
-        speechSynthesis.speak(speech);
-      }
-      next();
-    }
-
-    function startVoiceCommand() {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = "en-US";
-      recognition.onresult = function(event) {
-        const command = event.results[0][0].transcript.toLowerCase();
-        document.getElementById("verseDisplay").innerText = `Command: ${command}`;
-      };
-      recognition.start();
-    }
-
   </script>
 </body>
 </html>
