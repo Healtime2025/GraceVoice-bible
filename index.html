@@ -16,29 +16,35 @@
       font-size: 16px;
       margin: 10px;
     }
+    .scripture-box {
+      margin-top: 20px;
+      padding: 20px;
+      max-width: 700px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      color: #2c3e50;
+      text-align: left;
+    }
+    .footer-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .control-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
   <h1>📖 GraceVoice Bible Reader</h1>
   
-  <div style="display: flex; justify-content: center; gap: 10px;">
-    <label>Night Mode</label>
-    <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
-
-    <label>Voice:</label>
-    <select id="voiceSelect">
-      <option value="Microsoft Mark - English (United States) (en-US)">Microsoft Mark - English (United States) (en-US)</option>
-    </select>
-  </div>
-
-  <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
-    <button onclick="readText()" style="background-color: #1976d2; color: white;">🔺 Start Reading (Full)</button>
-    <button onclick="stopSpeech()" style="background-color: #1976d2; color: white;">⏸️ Stop/Pause</button>
-    <button onclick="readHighlighted()" style="background-color: #1976d2; color: white;">🔍 Read with Highlight</button>
-    <button onclick="startVoice()" style="background-color: #1976d2; color: white;">🎤 Voice Command</button>
-  </div>
-
   <div>
+    <label for="languageSelect">Language:</label>
     <select id="languageSelect">
       <option value="English">English</option>
       <option value="Setswana">Setswana</option>
@@ -50,9 +56,7 @@
       <option value="KJV">King James Version (KJV)</option>
       <option value="NIV">New International Version (NIV)</option>
     </select>
-  </div>
 
-  <div>
     <label for="bookSelect">Book:</label>
     <select id="bookSelect">
       <option value="Genesis">Genesis</option>
@@ -61,13 +65,32 @@
 
     <label for="chapterInput">Chapter:</label>
     <input type="number" id="chapterInput" placeholder="Chapter" min="1">
-<input type="number" id="startVerseInput" placeholder="Start Verse" min="1">
-<input type="number" id="endVerseInput" placeholder="End Verse" min="1">
+
+    <label for="startVerseInput">Start Verse:</label>
+    <input type="number" id="startVerseInput" placeholder="Start Verse" min="1">
+
+    <label for="endVerseInput">End Verse:</label>
+    <input type="number" id="endVerseInput" placeholder="End Verse" min="1">
+
     <button onclick="loadBible()">📖 Load Bible</button>
+  </div>
+
+  <div class="control-buttons">
+    <button onclick="startReading()">🔺 Start Reading (Full)</button>
+    <button onclick="stopReading()">⏸️ Stop/Pause</button>
+    <button onclick="readHighlighted()">🔍 Read with Highlight</button>
+    <button onclick="startVoiceCommand()">🎤 Voice Command</button>
   </div>
 
   <div class="scripture-box" id="verseDisplay">
     📖 Your selected Bible text will appear here.
+  </div>
+
+  <div class="footer-buttons">
+    <button onclick="window.location.href='receive-christ.html'">🙏 Receive Christ</button>
+    <button onclick="window.location.href='testimonies.html'">📣 Testimonies</button>
+    <button onclick="window.location.href='prayer-wall.html'">📝 Prayer Wall</button>
+    <button onclick="window.location.href='settings.html'">⚙️ Settings</button>
   </div>
 
   <script>
@@ -76,6 +99,8 @@
       const version = document.getElementById("versionSelect").value;
       const book = document.getElementById("bookSelect").value;
       const chapter = document.getElementById("chapterInput").value;
+      const startVerse = parseInt(document.getElementById("startVerseInput").value);
+      const endVerse = parseInt(document.getElementById("endVerseInput").value);
 
       if (!chapter) {
         alert("Please enter a chapter number.");
@@ -93,8 +118,11 @@
         const data = await response.json();
         const verses = data[book][chapter];
         let html = `<h2>${book} Chapter ${chapter}</h2>`;
-        for (const [verse, text] of Object.entries(verses)) {
-          html += `<p><strong>${verse}.</strong> ${text}</p>`;
+
+        for (let i = startVerse || 1; i <= (endVerse || Object.keys(verses).length); i++) {
+          if (verses[i]) {
+            html += `<p><strong>${i}.</strong> ${verses[i]}</p>`;
+          }
         }
 
         document.getElementById("verseDisplay").innerHTML = html;
@@ -102,6 +130,12 @@
         document.getElementById("verseDisplay").innerText = "⚠️ Error loading Bible text.";
       }
     }
+
+    function startReading() { /* To be implemented */ }
+    function stopReading() { /* To be implemented */ }
+    function readHighlighted() { /* To be implemented */ }
+    function startVoiceCommand() { /* To be implemented */ }
+
   </script>
 </body>
 </html>
