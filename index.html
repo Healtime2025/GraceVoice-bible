@@ -1,301 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GraceVoice</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraceVoice Bible Reader</title>
   <link rel="manifest" href="manifest.json">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f4f4f4;
       text-align: center;
-      padding: 40px;
-    }
-    h1 { font-size: 32px; color: #2c3e50; }
-    .scripture-box {
-      margin: 30px auto;
       padding: 20px;
-      max-width: 800px;
-      background: white;
-      border-radius: 10px;
-      font-size: 24px;
-      line-height: 1.6;
-      color: #333;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      text-align: left;
     }
-    button {
-      padding: 15px 25px;
-      font-size: 18px;
-      margin: 10px;
-      border: none;
-      background: #1976d2;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover { background: #145a9e; }
-    .bookmark-btn {
-      font-size: 14px;
-      padding: 4px 8px;
-      margin-left: 10px;
-      background: #ddd;
-      color: #444;
-      border-radius: 4px;
-    }
-    .bookmark-btn:hover { background: #ccc; }
-    #voiceFeedback {
-      margin-top: 10px;
-      font-style: italic;
-      color: #555;
-    }
-    select, input[type="number"] {
+    select, button {
       padding: 10px;
       font-size: 16px;
       margin: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-    .verse-line {
-      display: block;
-      margin: 8px 0;
-    }
-    .active-verse {
-      background-color: #e0f0ff;
-      font-weight: bold;
-      padding: 4px;
-      border-radius: 5px;
-    }
-    .night-mode { background-color: #1c1c1c; color: #e0e0e0; }
-    .night-mode .scripture-box { background-color: #2b2b2b; color: #e0e0e0; }
-    .night-mode button { background-color: #333; color: #fff; }
-    .night-mode button:hover { background-color: #555; }
-    .night-mode select, .night-mode input[type="number"] {
-      background-color: #444; color: #fff; border-color: #666;
     }
   </style>
 </head>
 <body>
-<h1>📖 GraceVoice</h1>
+  <h1>📖 GraceVoice Bible Reader</h1>
+  
+  <div style="display: flex; justify-content: center; gap: 10px;">
+    <label>Night Mode</label>
+    <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
 
-<div>
-  <label><input type="checkbox" id="themeToggle" onchange="toggleTheme()"> Night Mode</label>
-</div>
+    <label>Voice:</label>
+    <select id="voiceSelect">
+      <option value="Microsoft Mark - English (United States) (en-US)">Microsoft Mark - English (United States) (en-US)</option>
+    </select>
+  </div>
 
-<div>
-  <select id="voiceSelect"></select>
-</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
+    <button onclick="readText()" style="background-color: #1976d2; color: white;">🔺 Start Reading (Full)</button>
+    <button onclick="stopSpeech()" style="background-color: #1976d2; color: white;">⏸️ Stop/Pause</button>
+    <button onclick="readHighlighted()" style="background-color: #1976d2; color: white;">🔍 Read with Highlight</button>
+    <button onclick="startVoice()" style="background-color: #1976d2; color: white;">🎤 Voice Command</button>
+  </div>
 
-<div>
-  <button onclick="readText()">🔺 Start Reading (Full)</button>
-  <button onclick="stopSpeech()">⏸️ Stop/Pause</button>
-  <button onclick="readHighlighted()">🔍 Read with Highlight</button>
-  <button onclick="startVoice()">🎤 Voice Command</button>
-</div>
+  <div>
+    <select id="languageSelect">
+      <option value="English">English</option>
+      <option value="Setswana">Setswana</option>
+      <option value="Zulu">Zulu</option>
+    </select>
 
-<div>
-  <select id="bookSelect">
-    <option value="GEN">Genesis</option>
-    <option value="EXO">Exodus</option>
-    <option value="LEV">Leviticus</option>
-    <option value="NUM">Numbers</option>
-    <option value="DEU">Deuteronomy</option>
-    <option value="JOS">Joshua</option>
-    <option value="JDG">Judges</option>
-    <option value="RUT">Ruth</option>
-    <option value="1SA">1 Samuel</option>
-    <option value="2SA">2 Samuel</option>
-    <option value="1KI">1 Kings</option>
-    <option value="2KI">2 Kings</option>
-    <option value="1CH">1 Chronicles</option>
-    <option value="2CH">2 Chronicles</option>
-    <option value="EZR">Ezra</option>
-    <option value="NEH">Nehemiah</option>
-    <option value="EST">Esther</option>
-    <option value="JOB">Job</option>
-    <option value="PSA">Psalms</option>
-    <option value="PRO">Proverbs</option>
-    <option value="ECC">Ecclesiastes</option>
-    <option value="SNG">Song of Solomon</option>
-    <option value="ISA">Isaiah</option>
-    <option value="JER">Jeremiah</option>
-    <option value="LAM">Lamentations</option>
-    <option value="EZK">Ezekiel</option>
-    <option value="DAN">Daniel</option>
-    <option value="HOS">Hosea</option>
-    <option value="JOL">Joel</option>
-    <option value="AMO">Amos</option>
-    <option value="OBA">Obadiah</option>
-    <option value="JON">Jonah</option>
-    <option value="MIC">Micah</option>
-    <option value="NAH">Nahum</option>
-    <option value="HAB">Habakkuk</option>
-    <option value="ZEP">Zephaniah</option>
-    <option value="HAG">Haggai</option>
-    <option value="ZEC">Zechariah</option>
-    <option value="MAL">Malachi</option>
-    <option value="MAT">Matthew</option>
-    <option value="MRK">Mark</option>
-    <option value="LUK">Luke</option>
-    <option value="JHN">John</option>
-    <option value="ACT">Acts</option>
-    <option value="ROM">Romans</option>
-    <option value="1CO">1 Corinthians</option>
-    <option value="2CO">2 Corinthians</option>
-    <option value="GAL">Galatians</option>
-    <option value="EPH">Ephesians</option>
-    <option value="PHP">Philippians</option>
-    <option value="COL">Colossians</option>
-    <option value="1TH">1 Thessalonians</option>
-    <option value="2TH">2 Thessalonians</option>
-    <option value="1TI">1 Timothy</option>
-    <option value="2TI">2 Timothy</option>
-    <option value="TIT">Titus</option>
-    <option value="PHM">Philemon</option>
-    <option value="HEB">Hebrews</option>
-    <option value="JAS">James</option>
-    <option value="1PE">1 Peter</option>
-    <option value="2PE">2 Peter</option>
-    <option value="1JN">1 John</option>
-    <option value="2JN">2 John</option>
-    <option value="3JN">3 John</option>
-    <option value="JUD">Jude</option>
-    <option value="REV">Revelation</option>
-  </select>
-  <input id="chapterInput" type="number" placeholder="Chapter" min="1" />
-  <input id="startVerseInput" type="number" placeholder="Start Verse" min="1" />
-  <input id="endVerseInput" type="number" placeholder="End Verse (optional)" min="1" />
-  <button onclick="readSelected()">📘 Read Selection</button>
-</div>
+    <label for="versionSelect">Version:</label>
+    <select id="versionSelect">
+      <option value="KJV">King James Version (KJV)</option>
+      <option value="NIV">New International Version (NIV)</option>
+    </select>
+  </div>
 
-<div class="scripture-box" id="verseDisplay">Click "Start Reading" or use voice command</div>
-<div id="voiceFeedback" aria-live="polite"></div>
+  <div>
+    <label for="bookSelect">Book:</label>
+    <select id="bookSelect">
+      <option value="Genesis">Genesis</option>
+      <option value="John">John</option>
+    </select>
 
-<div style="margin-top: 40px">
-  <button onclick="window.location.href='settings.html'">⚙️ Settings</button>
-  <button onclick="window.location.href='testimonies.html'">📣 Testimonies</button>
-  <button onclick="window.location.href='receive-christ.html'">🙏 Receive Christ</button>
-  <button onclick="window.location.href='prayer-wall.html'">🦮 Prayer Wall</button>
-  <button onclick="window.location.href='about.html'">ℹ️ About</button>
-</div>
+    <label for="chapterInput">Chapter:</label>
+    <input type="number" id="chapterInput" placeholder="Chapter" min="1">
+<input type="number" id="startVerseInput" placeholder="Start Verse" min="1">
+<input type="number" id="endVerseInput" placeholder="End Verse" min="1">
+    <button onclick="loadBible()">📖 Load Bible</button>
+  </div>
 
-<script>
-let voices = [];
-let utterance = null;
-let verseData = {};
+  <div class="scripture-box" id="verseDisplay">
+    📖 Your selected Bible text will appear here.
+  </div>
 
-function toggleTheme() {
-  document.body.classList.toggle("night-mode");
-}
+  <script>
+    async function loadBible() {
+      const language = document.getElementById("languageSelect").value;
+      const version = document.getElementById("versionSelect").value;
+      const book = document.getElementById("bookSelect").value;
+      const chapter = document.getElementById("chapterInput").value;
 
-function populateVoiceSelect() {
-  voices = window.speechSynthesis.getVoices();
-  const select = document.getElementById("voiceSelect");
-  select.innerHTML = "";
-  voices.forEach((voice, i) => {
-    const opt = document.createElement("option");
-    opt.value = i;
-    opt.textContent = `${voice.name} (${voice.lang})`;
-    select.appendChild(opt);
-  });
-}
-
-function speak(text) {
-  if (speechSynthesis.speaking) speechSynthesis.cancel();
-  utterance = new SpeechSynthesisUtterance(text);
-  const selectedVoice = voices[document.getElementById("voiceSelect").value];
-  if (selectedVoice) utterance.voice = selectedVoice;
-  speechSynthesis.speak(utterance);
-}
-
-function stopSpeech() {
-  speechSynthesis.cancel();
-}
-
-function readText() {
-  const content = document.getElementById("verseDisplay").textContent;
-  if (!content.trim()) return alert("No content loaded yet.");
-  speak(content);
-}
-
-function readHighlighted() {
-  const verses = document.querySelectorAll(".verse-line");
-  let i = 0;
-  function next() {
-    if (i >= verses.length) return;
-    const el = verses[i];
-    el.classList.add("active-verse");
-    utterance = new SpeechSynthesisUtterance(el.textContent);
-    const selectedVoice = voices[document.getElementById("voiceSelect").value];
-    if (selectedVoice) utterance.voice = selectedVoice;
-    utterance.onend = () => {
-      el.classList.remove("active-verse");
-      i++;
-      next();
-    };
-    speechSynthesis.speak(utterance);
-  }
-  next();
-}
-
-async function fetchScripture(book, chapter) {
-  const res = await fetch(`/api/fetch-script.js?book=${book}&chapter=${chapter}`);
-  const data = await res.json();
-  verseData = data.verses;
-  return data;
-}
-
-async function readSelected() {
-  const book = document.getElementById("bookSelect").value;
-  const chapter = document.getElementById("chapterInput").value;
-  const start = parseInt(document.getElementById("startVerseInput").value || "1");
-  const end = parseInt(document.getElementById("endVerseInput").value || start);
-  if (!book || !chapter) return alert("Please select a book and chapter.");
-
-  const data = await fetchScripture(book, chapter);
-  const display = document.getElementById("verseDisplay");
-  display.innerHTML = "";
-  for (let i = start; i <= end; i++) {
-    if (data.verses[i]) {
-      const div = document.createElement("div");
-      div.className = "verse-line";
-      div.textContent = `${i}. ${data.verses[i]}`;
-      display.appendChild(div);
-    }
-  }
-  speak(display.textContent);
-}
-
-function startVoice() {
-  const r = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  r.lang = "en-US";
-  r.start();
-  r.onresult = async (e) => {
-    const cmd = e.results[0][0].transcript.toLowerCase();
-    document.getElementById("voiceFeedback").textContent = `You said: "${cmd}"`;
-    const match = cmd.match(/read (\d?\s?[a-z]+) (\d+)/i);
-    if (match) {
-      const bookName = match[1].trim();
-      const chap = match[2];
-      const options = document.getElementById("bookSelect").options;
-      for (let o of options) {
-        if (o.text.toLowerCase().includes(bookName.toLowerCase())) {
-          document.getElementById("bookSelect").value = o.value;
-          document.getElementById("chapterInput").value = chap;
-          await readSelected();
-          break;
-        }
+      if (!chapter) {
+        alert("Please enter a chapter number.");
+        return;
       }
-    } else {
-      speak("Sorry, I didn’t understand. Try saying 'Read John 3'.");
-    }
-  };
-}
 
-window.speechSynthesis.onvoiceschanged = populateVoiceSelect;
-document.addEventListener("DOMContentLoaded", populateVoiceSelect);
-</script>
+      const url = `/bibles/${language}/${version}/${book}_${chapter}.json`;
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          document.getElementById("verseDisplay").innerText = "⚠️ Chapter not found.";
+          return;
+        }
+
+        const data = await response.json();
+        const verses = data[book][chapter];
+        let html = `<h2>${book} Chapter ${chapter}</h2>`;
+        for (const [verse, text] of Object.entries(verses)) {
+          html += `<p><strong>${verse}.</strong> ${text}</p>`;
+        }
+
+        document.getElementById("verseDisplay").innerHTML = html;
+      } catch (error) {
+        document.getElementById("verseDisplay").innerText = "⚠️ Error loading Bible text.";
+      }
+    }
+  </script>
 </body>
 </html>
-
