@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -51,6 +51,11 @@
     </select>
 
     <label for="versionSelect">Version:</label>
+    <select id="versionSelect">
+      <option value="KJV">King James Version (KJV)</option>
+    </select>
+
+      <label for="versionSelect">Version:</label>
     <select id="versionSelect">
       <option value="KJV">King James Version (KJV)</option>
     </select>
@@ -155,7 +160,9 @@
       try {
         const response = await fetch(url);
         const data = await response.json();
-        const verses = data[chapter];
+
+        // Check if the book name itself is a key in the data object
+        const verses = data[book] ? data[book][chapter] : data[chapter];
 
         if (!verses) throw new Error("Chapter not found in this book.");
 
