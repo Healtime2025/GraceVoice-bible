@@ -10,11 +10,15 @@
       font-family: 'Segoe UI', sans-serif;
       text-align: center;
       padding: 20px;
+      background-color: #f4f4f4;
+      color: #2c3e50;
     }
-    select, button {
+    select, button, input {
       padding: 10px;
       font-size: 16px;
       margin: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
     }
     .scripture-box {
       margin-top: 20px;
@@ -25,6 +29,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       color: #2c3e50;
       text-align: left;
+      min-height: 150px;
     }
     .footer-buttons {
       margin-top: 20px;
@@ -42,7 +47,7 @@
 </head>
 <body>
   <h1>📖 GraceVoice Bible Reader</h1>
-  
+
   <div>
     <label for="languageSelect">Language:</label>
     <select id="languageSelect">
@@ -58,19 +63,78 @@
     </select>
 
     <label for="bookSelect">Book:</label>
-    <select id="bookSelect">
-      <option value="Genesis">Genesis</option>
-      <option value="John">John</option>
-    </select>
+<select id="bookSelect">
+  <option value="Genesis">Genesis</option>
+  <option value="Exodus">Exodus</option>
+  <option value="Leviticus">Leviticus</option>
+  <option value="Numbers">Numbers</option>
+  <option value="Deuteronomy">Deuteronomy</option>
+  <option value="Joshua">Joshua</option>
+  <option value="Judges">Judges</option>
+  <option value="Ruth">Ruth</option>
+  <option value="1 Samuel">1 Samuel</option>
+  <option value="2 Samuel">2 Samuel</option>
+  <option value="1 Kings">1 Kings</option>
+  <option value="2 Kings">2 Kings</option>
+  <option value="1 Chronicles">1 Chronicles</option>
+  <option value="2 Chronicles">2 Chronicles</option>
+  <option value="Ezra">Ezra</option>
+  <option value="Nehemiah">Nehemiah</option>
+  <option value="Esther">Esther</option>
+  <option value="Job">Job</option>
+  <option value="Psalms">Psalms</option>
+  <option value="Proverbs">Proverbs</option>
+  <option value="Ecclesiastes">Ecclesiastes</option>
+  <option value="Song of Solomon">Song of Solomon</option>
+  <option value="Isaiah">Isaiah</option>
+  <option value="Jeremiah">Jeremiah</option>
+  <option value="Lamentations">Lamentations</option>
+  <option value="Ezekiel">Ezekiel</option>
+  <option value="Daniel">Daniel</option>
+  <option value="Hosea">Hosea</option>
+  <option value="Joel">Joel</option>
+  <option value="Amos">Amos</option>
+  <option value="Obadiah">Obadiah</option>
+  <option value="Jonah">Jonah</option>
+  <option value="Micah">Micah</option>
+  <option value="Nahum">Nahum</option>
+  <option value="Habakkuk">Habakkuk</option>
+  <option value="Zephaniah">Zephaniah</option>
+  <option value="Haggai">Haggai</option>
+  <option value="Zechariah">Zechariah</option>
+  <option value="Malachi">Malachi</option>
+  <option value="Matthew">Matthew</option>
+  <option value="Mark">Mark</option>
+  <option value="Luke">Luke</option>
+  <option value="John">John</option>
+  <option value="Acts">Acts</option>
+  <option value="Romans">Romans</option>
+  <option value="1 Corinthians">1 Corinthians</option>
+  <option value="2 Corinthians">2 Corinthians</option>
+  <option value="Galatians">Galatians</option>
+  <option value="Ephesians">Ephesians</option>
+  <option value="Philippians">Philippians</option>
+  <option value="Colossians">Colossians</option>
+  <option value="1 Thessalonians">1 Thessalonians</option>
+  <option value="2 Thessalonians">2 Thessalonians</option>
+  <option value="1 Timothy">1 Timothy</option>
+  <option value="2 Timothy">2 Timothy</option>
+  <option value="Titus">Titus</option>
+  <option value="Philemon">Philemon</option>
+  <option value="Hebrews">Hebrews</option>
+  <option value="James">James</option>
+  <option value="1 Peter">1 Peter</option>
+  <option value="2 Peter">2 Peter</option>
+  <option value="1 John">1 John</option>
+  <option value="2 John">2 John</option>
+  <option value="3 John">3 John</option>
+  <option value="Jude">Jude</option>
+  <option value="Revelation">Revelation</option>
+</select>
+
 
     <label for="chapterInput">Chapter:</label>
     <input type="number" id="chapterInput" placeholder="Chapter" min="1">
-
-    <label for="startVerseInput">Start Verse:</label>
-    <input type="number" id="startVerseInput" placeholder="Start Verse" min="1">
-
-    <label for="endVerseInput">End Verse:</label>
-    <input type="number" id="endVerseInput" placeholder="End Verse" min="1">
 
     <button onclick="loadBible()">📖 Load Bible</button>
   </div>
@@ -86,55 +150,62 @@
     📖 Your selected Bible text will appear here.
   </div>
 
-  <div class="footer-buttons">
-    <button onclick="window.location.href='receive-christ.html'">🙏 Receive Christ</button>
-    <button onclick="window.location.href='testimonies.html'">📣 Testimonies</button>
-    <button onclick="window.location.href='prayer-wall.html'">📝 Prayer Wall</button>
-    <button onclick="window.location.href='settings.html'">⚙️ Settings</button>
-  </div>
-
   <script>
+    let selectedVoice = null;
+
     async function loadBible() {
       const language = document.getElementById("languageSelect").value;
       const version = document.getElementById("versionSelect").value;
       const book = document.getElementById("bookSelect").value;
       const chapter = document.getElementById("chapterInput").value;
-      const startVerse = parseInt(document.getElementById("startVerseInput").value);
-      const endVerse = parseInt(document.getElementById("endVerseInput").value);
 
-      if (!chapter) {
-        alert("Please enter a chapter number.");
-        return;
+      const url = `/bibles/${language}/${version}/${book}.json`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const verses = data[chapter];
+
+      let html = `<h2>${book} Chapter ${chapter}</h2>`;
+      for (const [verse, text] of Object.entries(verses)) {
+        html += `<p><strong>${verse}.</strong> ${text}</p>`;
       }
 
-      const url = `/bibles/${language}/${version}/${book}_${chapter}.json`;
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          document.getElementById("verseDisplay").innerText = "⚠️ Chapter not found.";
-          return;
-        }
-
-        const data = await response.json();
-        const verses = data[book][chapter];
-        let html = `<h2>${book} Chapter ${chapter}</h2>`;
-
-        for (let i = startVerse || 1; i <= (endVerse || Object.keys(verses).length); i++) {
-          if (verses[i]) {
-            html += `<p><strong>${i}.</strong> ${verses[i]}</p>`;
-          }
-        }
-
-        document.getElementById("verseDisplay").innerHTML = html;
-      } catch (error) {
-        document.getElementById("verseDisplay").innerText = "⚠️ Error loading Bible text.";
-      }
+      document.getElementById("verseDisplay").innerHTML = html;
     }
 
-    function startReading() { /* To be implemented */ }
-    function stopReading() { /* To be implemented */ }
-    function readHighlighted() { /* To be implemented */ }
-    function startVoiceCommand() { /* To be implemented */ }
+    function startReading() {
+      const text = document.getElementById("verseDisplay").innerText;
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.voice = selectedVoice || speechSynthesis.getVoices()[0];
+      speechSynthesis.speak(speech);
+    }
+
+    function stopReading() {
+      speechSynthesis.cancel();
+    }
+
+    function readHighlighted() {
+      const verses = document.querySelectorAll(".verse-line");
+      let i = 0;
+
+      function next() {
+        if (i >= verses.length) return;
+        const text = verses[i].innerText;
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.onend = () => { i++; next(); };
+        speechSynthesis.speak(speech);
+      }
+      next();
+    }
+
+    function startVoiceCommand() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+      recognition.onresult = function(event) {
+        const command = event.results[0][0].transcript.toLowerCase();
+        document.getElementById("verseDisplay").innerText = `Command: ${command}`;
+      };
+      recognition.start();
+    }
 
   </script>
 </body>
