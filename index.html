@@ -167,7 +167,7 @@
       const book = document.getElementById("bookSelect").value;
       const chapter = document.getElementById("chapterInput").value;
       
-      const url = `https://grace-voice-online.vercel.app/bibles/English/KJV/Acts.json`;
+      const url = `https://grace-voice-online.vercel.app/bibles/${language}/${version}/${book}.json`;
       const response = await fetch(url);
       const data = await response.json();
       const verses = data[chapter];
