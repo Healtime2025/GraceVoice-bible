@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -53,12 +53,7 @@
     <label for="versionSelect">Version:</label>
     <select id="versionSelect">
       <option value="KJV">King James Version (KJV)</option>
-    </select>
-
-      <label for="versionSelect">Version:</label>
-    <select id="versionSelect">
-      <option value="KJV">King James Version (KJV)</option>
-    </select>
+  </select>
 
     <label for="bookSelect">Book:</label>
 <select id="bookSelect">
@@ -161,9 +156,7 @@
         const response = await fetch(url);
         const data = await response.json();
 
-        // Check if the book name itself is a key in the data object
         const verses = data[book] ? data[book][chapter] : data[chapter];
-
         if (!verses) throw new Error("Chapter not found in this book.");
 
         let html = `<h2>${book} Chapter ${chapter}</h2>`;
@@ -178,15 +171,20 @@
     }
 
     function startReading() {
-      const startVerse = parseInt(document.getElementById("start-verse").value);
-      const endVerse = parseInt(document.getElementById("end-verse").value);
+      const startVerse = parseInt(document.getElementById("start-verse").value) || 1;
+      const endVerse = parseInt(document.getElementById("end-verse").value) || Infinity;
       const verses = document.querySelectorAll(".verse-line");
 
       let text = "";
       verses.forEach(v => {
-        const verseNum = parseInt(v.querySelector("strong").innerText);
+        const verseNum = parseFloat(v.querySelector("strong").innerText);
         if (verseNum >= startVerse && verseNum <= endVerse) text += v.innerText + " ";
       });
+
+      if (text.trim() === "") {
+        alert("Selected verses not found.");
+        return;
+      }
 
       const speech = new SpeechSynthesisUtterance(text);
       speechSynthesis.speak(speech);
