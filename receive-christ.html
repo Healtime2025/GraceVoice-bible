@@ -14,9 +14,7 @@
       font-size: 20px;
       line-height: 1.8;
     }
-    h1 {
-      font-size: 32px;
-    }
+    h1 { font-size: 32px; }
     .section {
       max-width: 700px;
       margin: 30px auto;
@@ -34,30 +32,10 @@
       border-radius: 6px;
       width: 100%;
     }
-    button {
-      background: #1976d2;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #145a9e;
-    }
-    a {
-      color: #1976d2;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .verse {
-      font-style: italic;
-      margin-top: 10px;
-    }
-    .night-mode {
-      background-color: #1c1c1c;
-      color: #e0e0e0;
-    }
-    .night-mode .section {
-      background: #2b2b2b;
-    }
+    button { background: #1976d2; color: white; cursor: pointer; }
+    button:hover { background: #145a9e; }
+    a { color: #1976d2; font-weight: bold; cursor: pointer; }
+    .verse { font-style: italic; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -65,80 +43,65 @@
 
  <div class="section">
   <p><strong>My name is Solomon Moriti from South Africa.</strong></p>
-  <p>I received CHRIST in 1994, and I have seen GOD's hand in my life ever since. I am now <span id="kingAge"></span> years old. If you're not sure whether you'll go to heaven one day when you leave this planet earth, you can make sure <strong>right now</strong>.</p>
+  <p>I received CHRIST in 1994, it has been <span id="yearsInChrist"></span> years now and I have seen GOD's hand in my life ever since. If you're not sure whether you'll go to Heaven one day when you leave this planet earth, you can make sure <strong>right now</strong>.</p>
 
-  <p><strong>Here's a prayer you can say:</strong></p>
-  <p>Dear LORD, I know that I am a sinner, and I ask for Your forgiveness. I believe that You died for my sins and rose again. I turn from my sins and invite You to come into my heart and life. I want to trust and follow You as my LORD and Savior. In Your name, I pray. Amen.</p>
+  <p><strong>You can pray this prayer if you wish God to change your life:</strong></p>
+  <p>Dear LORD, I know that I am a sinner and I ask for your forgiveness. I believe that you died for my sins and rose again. I repent before you and ask you to take my sins away. I invite you to come into my heart and my life. I want to trust and follow you as my LORD and Savior for the rest of my days. In the name of Jesus Christ I pray. Amen.</p>
+
+  <p>If you prayed that prayer sincerely, then according to the word of GOD you are born again. You are now GOD's child and Jesus lives in your heart. You can start reading the Bible from the book of John daily and pray. You will see God changing your life.</p>
+
+  <p class="verse">✝️ <a onclick="readVerse('1 Corinthians 5:17')">1 Corinthians 5:17</a>: "Therefore if any man be in Christ, he is a new creature: old things are passed away; behold, all things are become new."</p>
+
+  <hr>
+  <h3>📩 I Have Received Christ</h3>
+  <form onsubmit="return handleSubmission(event)">
+    <input type="text" id="fullName" placeholder="Your Full Name" required />
+    <input type="tel" id="mobile" placeholder="WhatsApp Number" required />
+    <textarea id="message" rows="4" placeholder="Your message (optional)"></textarea>
+    <button type="submit">✅ I Received Christ</button>
+  </form>
+  <p id="confirmation"></p>
+
+  <hr>
+  <h3>🎉 Congratulate New Believers</h3>
+  <button onclick="addCongrats()">👏 Click to Congratulate</button>
+  <p id="congratsCount">❤️ 0 people have clicked to celebrate!</p>
+
+  <button style="margin-top: 20px;" onclick="window.location.href='index.html'">🏠 Return to Home Page</button>
 </div>
 
 <script>
-  // Calculate and display dynamic age
-  const birthYear = 1978; // Replace this with your birth year
+  const birthYear = 1978;
+  const receivedYear = 1994;
   const currentYear = new Date().getFullYear();
-  const age = currentYear - birthYear;
-  document.getElementById("kingAge").textContent = age;
-</script>    </p>
+  document.getElementById("yearsInChrist").textContent = currentYear - receivedYear;
 
-    <p class="verse">
-      ✝️ <a onclick="readVerse('1 Corinthians 5:17')">1 Corinthians 5:17</a>: "Therefore if any man be in Christ, he is a new creature: old things are passed away; behold, all things are become new."
-    </p>
+  function readVerse(ref) {
+    const msg = new SpeechSynthesisUtterance(ref + ': Therefore if any man be in Christ, he is a new creature. Old things are passed away. All things become new.');
+    msg.rate = 0.95;
+    msg.pitch = 1;
+    speechSynthesis.speak(msg);
+  }
 
-    <hr>
-    <h3>📩 I Have Received Christ</h3>
-    <form onsubmit="return handleSubmission(event)">
-      <input type="text" id="fullName" placeholder="Your Full Name" required />
-      <input type="tel" id="mobile" placeholder="WhatsApp Number" required />
-      <textarea id="message" rows="4" placeholder="Your message (optional)"></textarea>
-      <button type="submit">✅ I Received Christ</button>
-    </form>
-    <p id="confirmation"></p>
+  function handleSubmission(e) {
+    e.preventDefault();
+    const name = document.getElementById("fullName").value;
+    document.getElementById("confirmation").textContent = `Thank you ${name}, we will reach out to you on WhatsApp.`;
+  }
 
-    <hr>
-    <h3>🎉 Congratulate New Believers</h3>
-    <button onclick="addCongrats()">👏 Click to Congratulate</button>
-    <p id="congratsCount">❤️ 0 people have clicked to celebrate!</p>
-  </div>
+  function addCongrats() {
+    let count = parseInt(localStorage.getItem("graceCongrats") || "0");
+    count++;
+    localStorage.setItem("graceCongrats", count);
+    document.getElementById("congratsCount").textContent = `❤️ ${count} people have clicked to celebrate!`;
+  }
 
-  <script>
-    function getAge() {
-      const savedYear = 1994;
-      const now = new Date();
-      const age = now.getFullYear() - savedYear;
-      document.getElementById("kingAge").textContent = age;
+  window.onload = () => {
+    let saved = localStorage.getItem("graceCongrats");
+    if (saved) {
+      document.getElementById("congratsCount").textContent = `❤️ ${saved} people have clicked to celebrate!`;
     }
-
-    function readVerse(ref) {
-      const msg = new SpeechSynthesisUtterance(ref + ': Therefore if any man be in Christ, he is a new creature. Old things are passed away. All things become new.');
-      msg.rate = 0.95;
-      msg.pitch = 1;
-      speechSynthesis.speak(msg);
-    }
-
-    function handleSubmission(e) {
-      e.preventDefault();
-      const name = document.getElementById("fullName").value;
-      const number = document.getElementById("mobile").value;
-      document.getElementById("confirmation").textContent = `Thank you ${name}, we will reach out to you on WhatsApp.`;
-      document.getElementById("fullName").value = "";
-      document.getElementById("mobile").value = "";
-      document.getElementById("message").value = "";
-      return false;
-    }
-
-    function addCongrats() {
-      let count = parseInt(localStorage.getItem("graceCongrats") || "0");
-      count++;
-      localStorage.setItem("graceCongrats", count);
-      document.getElementById("congratsCount").textContent = `❤️ ${count} people have clicked to celebrate!`;
-    }
-
-    window.onload = () => {
-      getAge();
-      let saved = localStorage.getItem("graceCongrats");
-      if (saved) {
-        document.getElementById("congratsCount").textContent = `❤️ ${saved} people have clicked to celebrate!`;
-      }
-    };
-  </script>
+  };
+</script>
 </body>
 </html>
