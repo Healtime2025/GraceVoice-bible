@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>GraceVoice Bible</title>
+  <link rel="manifest" href="/manifest.json">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -18,9 +19,9 @@
       padding: 0 20px;
     }
     h1 {
-      font-size: 4rem;
+      font-size: clamp(2rem, 8vw, 4rem);
       text-transform: uppercase;
-      letter-spacing: 5px;
+      letter-spacing: clamp(2px, 0.5vw, 5px);
       color: #2c3e50;
       cursor: pointer;
       transition: opacity 1s, transform 1s;
@@ -37,10 +38,9 @@
       text-align: center;
     }
 
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 3rem;
-        letter-spacing: 3px;
+    @media (min-width: 1024px) {
+      body {
+        padding: 0 40px;
       }
     }
   </style>
