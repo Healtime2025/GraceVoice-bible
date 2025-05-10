@@ -1,7 +1,7 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/landing/index.html" },
-    { "source": "/home", "destination": "/index.html" },
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/home", "destination": "/index2.html" },
     { "source": "/reader", "destination": "/reader.html" },
     { "source": "/settings", "destination": "/settings.html" },
     { "source": "/bookmarks", "destination": "/bookmark.html" },
