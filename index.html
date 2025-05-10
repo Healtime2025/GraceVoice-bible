@@ -27,19 +27,41 @@
     h1:hover {
       opacity: 0.7;
     }
+    #loading {
+      display: none;
+      font-size: 1.2rem;
+      margin-top: 20px;
+      color: #2c3e50;
+    }
   </style>
   <script>
     function fadeOut() {
       const heading = document.querySelector('h1');
       heading.style.opacity = '0';
       heading.style.transform = 'scale(0.9)';
+      document.getElementById('loading').style.display = 'block';
+
       setTimeout(() => {
-        window.location.href = '/index2.html';  /* Now correctly points to index2.html */
+        fetch('/index2.html')
+          .then(response => {
+            if (response.ok) {
+              window.location.href = '/index2.html';
+            } else {
+              document.getElementById('loading').innerText = '⚠️ Error: Main page not found.';
+            }
+          })
+          .catch(() => {
+            document.getElementById('loading').innerText = '⚠️ Error: Unable to connect.';
+          });
       }, 800);
     }
   </script>
 </head>
 <body>
-  <h1 onclick="fadeOut()">GRACEVOICE BIBLE</h1>
+  <div>
+    <h1 onclick="fadeOut()">GRACEVOICE BIBLE</h1>
+    <div id="loading">Loading...</div>
+  </div>
 </body>
 </html>
+
