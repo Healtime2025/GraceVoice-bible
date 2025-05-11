@@ -125,8 +125,9 @@
     <div class="control-buttons">
       <button onclick="loadBible()">📖 Load Bible</button>
       <button onclick="toggleNightMode()">🌙 Night Mode</button>
+      <button onclick="startReading()">▶️ Start Reading</button>
       <button onclick="startReadingWithHighlight()">🔍 Read with Highlight</button>
-      <button onclick="stopReading()">🛑 Stop Reading</button>
+      <button onclick="stopReading()">🛑 Stop/Pause</button>
       <button onclick="startVoiceCommand()">🎤 Voice Command</button>
     </div>
   </div>
@@ -136,9 +137,10 @@
   </div>
 
 <script type="module">
-  import { loadBible, toggleNightMode, startReadingWithHighlight, stopReading, startVoiceCommand } from './bible-reader.js';
+  import { loadBible, toggleNightMode, startReading, startReadingWithHighlight, stopReading, startVoiceCommand } from './bible-reader.js';
   window.loadBible = loadBible;
   window.toggleNightMode = toggleNightMode;
+  window.startReading = startReading;
   window.startReadingWithHighlight = startReadingWithHighlight;
   window.stopReading = stopReading;
   window.startVoiceCommand = startVoiceCommand;
