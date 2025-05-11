@@ -46,10 +46,10 @@ export async function loadBible() {
   }
 }
 
-// Start Reading
+// Start Reading with Resume
+let currentIndex = 0;
 export function startReading() {
   const verses = document.querySelectorAll('.verse-line');
-  let currentIndex = 0;
 
   function readAndProgress() {
     if (currentIndex >= verses.length) return;
@@ -70,7 +70,6 @@ export function startReading() {
 // Read with Highlight
 export function startReadingWithHighlight() {
   const verses = document.querySelectorAll('.verse-line');
-  let currentIndex = 0;
 
   function highlightAndRead() {
     if (currentIndex >= verses.length) return;
