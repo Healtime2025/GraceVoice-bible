@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -140,21 +140,23 @@
         const start = document.getElementById('start-verse').value;
         const end = document.getElementById('end-verse').value;
 
-        // Mock Bible text data
-        const verses = {
-          "Acts": {
-            "1": { "1": "In the beginning, God created the heaven and the earth.", "2": "And the earth was without form, and void." }
-          }
-        };
+        const url = `https://raw.githubusercontent.com/Healtime2025/GraceVoice-online/main/bibles/English/KJV/${book}.json`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to load Bible file.");
 
-        if (!verses[book] || !verses[book][chapter]) {
+        const data = await response.json();
+        const verses = data[book][chapter];
+
+        if (!verses) {
           document.getElementById('verseDisplay').innerText = "❌ No verses found for your selection.";
           return;
         }
 
         let text = "";
         for (let i = start; i <= end; i++) {
-          text += verses[book][chapter][i] ? `Verse ${i}: ${verses[book][chapter][i]}\n` : "❌ Verse not available.\n";
+          if (verses[i]) {
+            text += `Verse ${i}: ${verses[i]}\n`;
+          }
         }
 
         document.getElementById('verseDisplay').innerText = text.trim() || "❌ No verses available for your selection.";
