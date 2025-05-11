@@ -18,17 +18,18 @@ export async function loadBible() {
     if (!response.ok) throw new Error("Failed to load Bible file.");
 
     const data = await response.json();
-    const verses = data[book][chapter];
+    const chapterData = data[book][chapter];
 
-    if (!verses) {
+    if (!chapterData) {
       document.getElementById('verseDisplay').innerText = "❌ No verses found for your selection.";
       return;
     }
 
     let text = "";
     for (let i = start; i <= end; i++) {
-      if (verses[i]) {
-        text += `Verse ${i}: ${verses[i]}\n`;
+      const verseKey = `${chapter}:${i}`;
+      if (chapterData[verseKey]) {
+        text += `Verse ${i}: ${chapterData[verseKey]}\n`;
       }
     }
 
