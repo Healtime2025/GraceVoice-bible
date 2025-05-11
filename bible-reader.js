@@ -10,15 +10,15 @@ export async function loadBible() {
   try {
     const book = document.getElementById('bookSelect').value;
     const chapter = document.getElementById('chapterInput').value;
-    const start = document.getElementById('start-verse').value;
-    const end = document.getElementById('end-verse').value;
+    const start = document.getElementById('start-verse').value || 1;
+    const end = document.getElementById('end-verse').value || 'full';
 
     const url = `https://raw.githubusercontent.com/Healtime2025/GraceVoice-online/main/bibles/English/KJV/${book}.json`;
     const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to load Bible file.");
 
-    const data = await response.json(); // Corrected data definition
-    const chapterData = data[book]; // Load entire book
+    const data = await response.json();
+    const chapterData = data[book];
 
     if (!chapterData) {
       document.getElementById('verseDisplay').innerText = "❌ No verses found for your selection.";
@@ -26,21 +26,23 @@ export async function loadBible() {
     }
 
     let text = "";
-    for (let i = start; i <= end; i++) {
-      const verseKey = `${chapter}:${i}`;
 
-      // Search across all chapters
-      for (const chapterKey in chapterData) {
-        if (chapterData[chapterKey] && chapterData[chapterKey][verseKey]) {
-          text += `${i}: ${chapterData[chapterKey][verseKey]}\n`;
+    if (end === 'full') { // Load full chapter if no end verse
+      for (const key in chapterData[chapter]) {
+        text += `${key}: ${chapterData[chapter][key]}\n`;
+      }
+    } else {
+      for (let i = start; i <= end; i++) {
+        const verseKey = `${chapter}:${i}`;
+        for (const chapterKey in chapterData) {
+          if (chapterData[chapterKey] && chapterData[chapterKey][verseKey]) {
+            text += `${i}: ${chapterData[chapterKey][verseKey]}\n`;
+          }
         }
       }
     }
 
     document.getElementById('verseDisplay').innerText = text.trim() || "❌ No verses available for your selection.";
-
-    // Automatically read loaded text
-    readTextAloud(text.trim());
 
   } catch (error) {
     console.error("Error loading Bible: ", error);
@@ -48,23 +50,37 @@ export async function loadBible() {
   }
 }
 
-// Automatically Read Text Aloud
-function readTextAloud(text) {
-  const cleanText = text.replace(/^\d+:\s*/gm, '');
-  const speech = new SpeechSynthesisUtterance(cleanText);
-  speechSynthesis.speak(speech);
+// Start Reading with Highlight
+export function startReadingWithHighlight() {
+  const textElement = document.getElementById('verseDisplay');
+  const text = textElement.innerText.split('\n');
+
+  let currentIndex = 0;
+
+  function highlightAndRead() {
+    if (currentIndex >= text.length) return; // End reading
+
+    textElement.innerHTML = text
+      .map((line, index) => index === currentIndex ? `<mark>${line}</mark>` : line)
+      .join('<br>');
+
+    const speech = new SpeechSynthesisUtterance(text[currentIndex].replace(/^\d+:\s*/, ''));
+    speechSynthesis.speak(speech);
+
+    speech.onend = () => {
+      currentIndex++;
+      highlightAndRead();
+    };
+  }
+
+  speechSynthesis.cancel(); // Ensure no other speech is playing
+  highlightAndRead();
 }
 
-// Read Highlighted Text
-export function readHighlighted() {
-  const selection = window.getSelection().toString();
-  if (selection) {
-    const cleanText = selection.replace(/^\d+:\s*/, '').replace(/^\d+:\s*/, '');
-    const speech = new SpeechSynthesisUtterance(cleanText);
-    speechSynthesis.speak(speech);
-  } else {
-    alert("Please highlight text first.");
-  }
+// Stop Reading
+export function stopReading() {
+  speechSynthesis.cancel();
+  document.getElementById('verseDisplay').innerHTML = document.getElementById('verseDisplay').innerText;
 }
 
 // Start Voice Command
