@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -32,7 +32,6 @@
       min-height: 150px;
       overflow-y: auto;
       max-height: 400px;
-      position: relative;
     }
     .control-buttons {
       display: flex;
@@ -40,15 +39,8 @@
       gap: 10px;
       margin-top: 15px;
     }
-    .reading-progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 4px;
-      background-color: #1976d2;
-      width: 0%;
-      transition: width 0.3s ease;
-    }
+    .verse-line { transition: background 0.3s; }
+    .highlight { background-color: yellow; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -140,7 +132,6 @@
 
   <div class="scripture-box" id="verseDisplay">
     📖 Your selected Bible text will appear here.
-    <div class="reading-progress" id="readingProgress"></div>
   </div>
 
 <script type="module">
@@ -155,5 +146,4 @@
 
 </body>
 </html>
-
 
