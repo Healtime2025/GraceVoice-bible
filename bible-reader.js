@@ -34,17 +34,28 @@ export async function loadBible() {
     }
 
     document.getElementById('verseDisplay').innerText = text.trim() || "❌ No verses available for your selection.";
+
+    // Automatically read loaded text
+    readTextAloud(text.trim());
+
   } catch (error) {
     console.error("Error loading Bible: ", error);
     document.getElementById('verseDisplay').innerText = "❌ Error loading Bible text. Check console for details.";
   }
 }
 
+// Automatically Read Text Aloud
+function readTextAloud(text) {
+  const cleanText = text.replace(/^\d+:\s*/gm, '');
+  const speech = new SpeechSynthesisUtterance(cleanText);
+  speechSynthesis.speak(speech);
+}
+
 // Read Highlighted Text
 export function readHighlighted() {
   const selection = window.getSelection().toString();
   if (selection) {
-    const cleanText = selection.replace(/^[0-9]+:/, '');
+    const cleanText = selection.replace(/^\d+:\s*/, '').replace(/^\d+:\s*/, '');
     const speech = new SpeechSynthesisUtterance(cleanText);
     speechSynthesis.speak(speech);
   } else {
@@ -62,4 +73,3 @@ export function startVoiceCommand() {
   };
   recognition.start();
 }
-
