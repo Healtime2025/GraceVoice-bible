@@ -17,6 +17,7 @@ export async function loadBible() {
     const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to load Bible file.");
 
+    const data = await response.json(); // Corrected data definition
     const chapterData = data[book][chapter];
 
     if (!chapterData) {
