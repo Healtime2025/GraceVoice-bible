@@ -44,6 +44,7 @@ export async function loadBible() {
 
     document.getElementById('verseDisplay').innerHTML = text.trim() || "❌ No verses available for your selection.";
 
+    // Reset progress bar
     document.getElementById('readingProgress').style.width = '0%';
 
   } catch (error) {
@@ -52,7 +53,7 @@ export async function loadBible() {
   }
 }
 
-// Start Reading (Normal)
+// Start Reading
 export function startReading() {
   const verses = document.querySelectorAll('.verse-line');
   let currentIndex = 0;
@@ -60,7 +61,7 @@ export function startReading() {
   function readAndProgress() {
     if (currentIndex >= verses.length) return;
 
-    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^[^:]+:\s*/, ''));
+    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^\d+:\s*/, ''));
     speech.onend = () => {
       currentIndex++;
       updateProgress(currentIndex, verses.length);
@@ -79,36 +80,9 @@ export function startReading() {
   readAndProgress();
 }
 
-// Enhanced Read with Highlight
-export function startReadingWithHighlight() {
-  const verses = document.querySelectorAll('.verse-line');
-  let currentIndex = 0;
-
-  function highlightAndRead() {
-    if (currentIndex >= verses.length) return;
-
-    verses.forEach((verse, index) => {
-      verse.classList.toggle('highlight', index === currentIndex);
-      verse.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-
-    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^[^:]+:\s*/, ''));
-    speech.onend = () => {
-      currentIndex++;
-      highlightAndRead();
-    };
-
-    speechSynthesis.speak(speech);
-  }
-
-  speechSynthesis.cancel();
-  highlightAndRead();
-}
-
 // Stop Reading
 export function stopReading() {
   speechSynthesis.cancel();
-  document.querySelectorAll('.verse-line').forEach(v => v.classList.remove('highlight'));
   document.getElementById('readingProgress').style.width = '0%';
 }
 
@@ -141,4 +115,3 @@ export function startVoiceCommand() {
 
   recognition.start();
 }
-
