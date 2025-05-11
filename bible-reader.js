@@ -17,7 +17,6 @@ export async function loadBible() {
     const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to load Bible file.");
 
-    const data = await response.json();
     const chapterData = data[book][chapter];
 
     if (!chapterData) {
@@ -29,7 +28,7 @@ export async function loadBible() {
     for (let i = start; i <= end; i++) {
       const verseKey = `${chapter}:${i}`;
       if (chapterData[verseKey]) {
-        text += `Verse ${i}: ${chapterData[verseKey]}\n`;
+        text += `${i}: ${chapterData[verseKey]}\n`;
       }
     }
 
@@ -44,7 +43,8 @@ export async function loadBible() {
 export function readHighlighted() {
   const selection = window.getSelection().toString();
   if (selection) {
-    const speech = new SpeechSynthesisUtterance(selection);
+    const cleanText = selection.replace(/^[0-9]+:/, '');
+    const speech = new SpeechSynthesisUtterance(cleanText);
     speechSynthesis.speak(speech);
   } else {
     alert("Please highlight text first.");
@@ -61,3 +61,4 @@ export function startVoiceCommand() {
   };
   recognition.start();
 }
+
