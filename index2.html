@@ -130,6 +130,12 @@
     📖 Your selected Bible text will appear here.
   </div>
 
-  <script type="module" src="bible-reader.js"></script>
+  <script type="module">
+    import { loadBible, toggleNightMode, readHighlighted, startVoiceCommand } from './bible-reader.js';
+    window.loadBible = loadBible;
+    window.toggleNightMode = toggleNightMode;
+    window.readHighlighted = readHighlighted;
+    window.startVoiceCommand = startVoiceCommand;
+  </script>
 </body>
 </html>
