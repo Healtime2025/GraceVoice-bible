@@ -29,22 +29,20 @@ export async function loadBible() {
 
     if (end === 'full') {
       for (const key in chapterData[chapter]) {
-        text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[chapter][key]}</div>\n`;
+        text += `<div class='verse-line'>${chapterData[chapter][key]}</div>\n`;
       }
     } else {
       for (let i = start; i <= end; i++) {
         const verseKey = `${chapter}:${i}`;
         for (const chapterKey in chapterData) {
           if (chapterData[chapterKey] && chapterData[chapterKey][verseKey]) {
-            text += `<div class='verse-line' id='verse-${verseKey}'>${i}: ${chapterData[chapterKey][verseKey]}</div>\n`;
+            text += `<div class='verse-line'>${chapterData[chapterKey][verseKey]}</div>\n`;
           }
         }
       }
     }
 
     document.getElementById('verseDisplay').innerHTML = text.trim() || "❌ No verses available for your selection.";
-
-    // Reset progress bar
     document.getElementById('readingProgress').style.width = '0%';
 
   } catch (error) {
@@ -53,7 +51,7 @@ export async function loadBible() {
   }
 }
 
-// Start Reading
+// Start Reading (without Highlight)
 export function startReading() {
   const verses = document.querySelectorAll('.verse-line');
   let currentIndex = 0;
@@ -61,7 +59,7 @@ export function startReading() {
   function readAndProgress() {
     if (currentIndex >= verses.length) return;
 
-    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^\d+:\s*/, ''));
+    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText);
     speech.onend = () => {
       currentIndex++;
       updateProgress(currentIndex, verses.length);
