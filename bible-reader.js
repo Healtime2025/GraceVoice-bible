@@ -27,24 +27,17 @@ export async function loadBible() {
 
     let text = "";
 
-    if (end === 'full') {
-      for (const key in chapterData) {
-        if (key.startsWith(chapter + ":")) {
-          text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[key]}</div>\n`;
-        }
-      }
-    } else {
-      for (let i = start; i <= end; i++) {
-        const verseKey = `${chapter}:${i}`;
-        if (chapterData[verseKey]) {
-          text += `<div class='verse-line' id='verse-${verseKey}'>${verseKey}: ${chapterData[verseKey]}</div>\n`;
-        } else {
-          text += `<div class='verse-line' id='verse-${verseKey}'>${verseKey}: ❌ Verse not found</div>\n`;
-        }
+    for (const key in chapterData) {
+      if (key.startsWith(`${chapter}:`)) {
+        text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[key]}</div>\n`;
       }
     }
 
-    document.getElementById('verseDisplay').innerHTML = text.trim() || "❌ No verses available for your selection.";
+    if (text.trim() === "") {
+      document.getElementById('verseDisplay').innerText = "❌ No verses available for your selection.";
+    } else {
+      document.getElementById('verseDisplay').innerHTML = text.trim();
+    }
 
   } catch (error) {
     console.error("Error loading Bible: ", error);
@@ -60,7 +53,7 @@ export function startReading() {
   function readAndProgress() {
     if (currentIndex >= verses.length) return;
 
-    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^[0-9]+:\s*/, ''));
+    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^\d+:\s*/, ''));
     speech.onend = () => {
       currentIndex++;
       readAndProgress();
@@ -81,7 +74,7 @@ export function startReadingWithHighlight() {
     if (currentIndex >= verses.length) return;
 
     verses.forEach((v, i) => v.style.backgroundColor = (i === currentIndex) ? 'yellow' : 'transparent');
-    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^[0-9]+:\s*/, ''));
+    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^\d+:\s*/, ''));
     speech.onend = () => {
       currentIndex++;
       highlightAndRead();
