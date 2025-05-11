@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -123,7 +123,8 @@
     <input type="number" id="end-verse" placeholder="Enter end verse" min="1">
 
     <div class="control-buttons">
-      <button onclick="startReading()">🔊 Start Reading</button>
+      <button onclick="loadBible()">📖 Load Bible</button>
+      <button onclick="startReadingWithHighlight()">🔊 Start Reading</button>
       <button onclick="stopReading()">⏸️ Stop/Pause</button>
       <button onclick="toggleNightMode()">🌙 Night Mode</button>
       <button onclick="startVoiceCommand()">🎤 Voice Command</button>
@@ -135,15 +136,13 @@
   </div>
 
 <script type="module">
-  import { loadBible, toggleNightMode, startReading, stopReading, startReadingWithHighlight, startVoiceCommand } from './bible-reader.js';
+  import { loadBible, toggleNightMode, startReadingWithHighlight, stopReading, startVoiceCommand } from './bible-reader.js';
   window.loadBible = loadBible;
   window.toggleNightMode = toggleNightMode;
-  window.startReading = startReading;
-  window.stopReading = stopReading;
   window.startReadingWithHighlight = startReadingWithHighlight;
+  window.stopReading = stopReading;
   window.startVoiceCommand = startVoiceCommand;
 </script>
 
 </body>
 </html>
-
