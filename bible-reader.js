@@ -18,7 +18,7 @@ export async function loadBible() {
     if (!response.ok) throw new Error("Failed to load Bible file.");
 
     const data = await response.json(); // Corrected data definition
-    const chapterData = data[book][chapter];
+    const chapterData = data[book]; // Load entire book
 
     if (!chapterData) {
       document.getElementById('verseDisplay').innerText = "❌ No verses found for your selection.";
@@ -28,8 +28,12 @@ export async function loadBible() {
     let text = "";
     for (let i = start; i <= end; i++) {
       const verseKey = `${chapter}:${i}`;
-      if (chapterData[verseKey]) {
-        text += `${i}: ${chapterData[verseKey]}\n`;
+
+      // Search across all chapters
+      for (const chapterKey in chapterData) {
+        if (chapterData[chapterKey] && chapterData[chapterKey][verseKey]) {
+          text += `${i}: ${chapterData[chapterKey][verseKey]}\n`;
+        }
       }
     }
 
