@@ -34,9 +34,7 @@ export async function loadBible() {
     } else {
       for (let i = start; i <= end; i++) {
         const verseKey = `${chapter}:${i}`;
-        if (chapterData[chapter][verseKey]) {
-          text += `<div class='verse-line' id='verse-${verseKey}'>${i}: ${chapterData[chapter][verseKey]}</div>\n`;
-        }
+        text += `<div class='verse-line' id='verse-${verseKey}'>${i}: ${chapterData[chapter][verseKey] || "Verse not found"}</div>\n`;
       }
     }
 
@@ -69,37 +67,41 @@ export function startReading() {
   readAndProgress();
 }
 
+// Read with Highlight
+export function startReadingWithHighlight() {
+  const verses = document.querySelectorAll('.verse-line');
+  let currentIndex = 0;
+
+  function highlightAndRead() {
+    if (currentIndex >= verses.length) return;
+
+    verses.forEach((v, i) => v.style.backgroundColor = (i === currentIndex) ? 'yellow' : 'transparent');
+    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^[0-9]+:\s*/, ''));
+    speech.onend = () => {
+      currentIndex++;
+      highlightAndRead();
+    };
+
+    speechSynthesis.speak(speech);
+  }
+
+  speechSynthesis.cancel();
+  highlightAndRead();
+}
+
 // Stop Reading
 export function stopReading() {
   speechSynthesis.cancel();
+  document.querySelectorAll('.verse-line').forEach(v => v.style.backgroundColor = 'transparent');
 }
 
 // Start Voice Command
 export function startVoiceCommand() {
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.lang = "en-US";
-  recognition.onresult = async function(event) {
+  recognition.onresult = (event) => {
     const command = event.results[0][0].transcript.toLowerCase();
     document.getElementById("voiceFeedback").innerText = `You said: "${command}"`;
-
-    const match = command.match(/read (\d+\s?[a-z]+) (\d+)/i);
-    if (match) {
-      const bookName = match[1].trim();
-      const chap = match[2];
-
-      const options = document.getElementById("bookSelect").options;
-      for (let option of options) {
-        if (option.text.toLowerCase().includes(bookName.toLowerCase())) {
-          document.getElementById("bookSelect").value = option.value;
-          document.getElementById("chapterInput").value = chap;
-          loadBible();
-          break;
-        }
-      }
-    } else {
-      alert("Sorry, I didn’t understand. Try saying 'Read John 3'.");
-    }
   };
-
   recognition.start();
 }
