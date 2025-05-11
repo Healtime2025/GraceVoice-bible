@@ -20,7 +20,7 @@ export async function loadBible() {
     const data = await response.json();
     const chapterData = data[book];
 
-    if (!chapterData || !chapterData[chapter]) {
+    if (!chapterData) {
       document.getElementById('verseDisplay').innerText = "❌ No verses found for your selection.";
       return;
     }
@@ -28,13 +28,17 @@ export async function loadBible() {
     let text = "";
 
     if (end === 'full') {
-      for (const key in chapterData[chapter]) {
-        text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[chapter][key]}</div>\n`;
+      for (const key in chapterData) {
+        if (key.startsWith(chapter + ":")) {
+          text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[key]}</div>\n`;
+        }
       }
     } else {
       for (let i = start; i <= end; i++) {
         const verseKey = `${chapter}:${i}`;
-        text += `<div class='verse-line' id='verse-${verseKey}'>${i}: ${chapterData[chapter][verseKey] || "Verse not found"}</div>\n`;
+        if (chapterData[verseKey]) {
+          text += `<div class='verse-line' id='verse-${verseKey}'>${verseKey}: ${chapterData[verseKey]}</div>\n`;
+        }
       }
     }
 
