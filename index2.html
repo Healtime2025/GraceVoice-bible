@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -32,6 +32,7 @@
       min-height: 150px;
       overflow-y: auto;
       max-height: 400px;
+      position: relative;
     }
     .control-buttons {
       display: flex;
@@ -39,8 +40,15 @@
       gap: 10px;
       margin-top: 15px;
     }
-    .verse-line { transition: background 0.3s; }
-    .highlight { background-color: yellow; font-weight: bold; }
+    .reading-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background-color: #1976d2;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
   </style>
 </head>
 <body>
@@ -123,8 +131,7 @@
     <input type="number" id="end-verse" placeholder="Enter end verse" min="1">
 
     <div class="control-buttons">
-      <button onclick="loadBible()">📖 Load Bible</button>
-      <button onclick="startReadingWithHighlight()">🔊 Start Reading</button>
+      <button onclick="startReading()">🔊 Start Reading</button>
       <button onclick="stopReading()">⏸️ Stop/Pause</button>
       <button onclick="toggleNightMode()">🌙 Night Mode</button>
       <button onclick="startVoiceCommand()">🎤 Voice Command</button>
@@ -133,16 +140,20 @@
 
   <div class="scripture-box" id="verseDisplay">
     📖 Your selected Bible text will appear here.
+    <div class="reading-progress" id="readingProgress"></div>
   </div>
 
 <script type="module">
-  import { loadBible, toggleNightMode, startReadingWithHighlight, stopReading, startVoiceCommand } from './bible-reader.js';
+  import { loadBible, toggleNightMode, startReading, stopReading, startReadingWithHighlight, startVoiceCommand } from './bible-reader.js';
   window.loadBible = loadBible;
   window.toggleNightMode = toggleNightMode;
-  window.startReadingWithHighlight = startReadingWithHighlight;
+  window.startReading = startReading;
   window.stopReading = stopReading;
+  window.startReadingWithHighlight = startReadingWithHighlight;
   window.startVoiceCommand = startVoiceCommand;
 </script>
 
 </body>
 </html>
+
+
