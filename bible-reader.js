@@ -18,9 +18,9 @@ export async function loadBible() {
     if (!response.ok) throw new Error("Failed to load Bible file.");
 
     const data = await response.json();
-    const chapterData = data[book];
+    const chapterData = data[book]?.[''] || {};
 
-    if (!chapterData) {
+    if (!Object.keys(chapterData).length) {
       document.getElementById('verseDisplay').innerText = "❌ No verses found for your selection.";
       return;
     }
@@ -28,16 +28,15 @@ export async function loadBible() {
     let text = "";
 
     for (const key in chapterData) {
-      if (key.startsWith(`${chapter}:`)) {
-        text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[key]}</div>\n`;
+      const [chapterNumber, verseNumber] = key.split(":");
+      if (chapterNumber === chapter) {
+        if (end === 'full' || (parseInt(verseNumber) >= start && parseInt(verseNumber) <= end)) {
+          text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[key]}</div>\n`;
+        }
       }
     }
 
-    if (text.trim() === "") {
-      document.getElementById('verseDisplay').innerText = "❌ No verses available for your selection.";
-    } else {
-      document.getElementById('verseDisplay').innerHTML = text.trim();
-    }
+    document.getElementById('verseDisplay').innerHTML = text.trim() || "❌ No verses available for your selection.";
 
   } catch (error) {
     console.error("Error loading Bible: ", error);
@@ -64,27 +63,6 @@ export function startReading() {
 
   speechSynthesis.cancel();
   readAndProgress();
-}
-
-// Read with Highlight
-export function startReadingWithHighlight() {
-  const verses = document.querySelectorAll('.verse-line');
-
-  function highlightAndRead() {
-    if (currentIndex >= verses.length) return;
-
-    verses.forEach((v, i) => v.style.backgroundColor = (i === currentIndex) ? 'yellow' : 'transparent');
-    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^\d+:\s*/, ''));
-    speech.onend = () => {
-      currentIndex++;
-      highlightAndRead();
-    };
-
-    speechSynthesis.speak(speech);
-  }
-
-  speechSynthesis.cancel();
-  highlightAndRead();
 }
 
 // Stop Reading
