@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -134,30 +134,33 @@
     function toggleNightMode() { document.body.classList.toggle('night-mode'); }
 
     async function loadBible() {
-      const book = document.getElementById('bookSelect').value;
-      const chapter = document.getElementById('chapterInput').value;
-      const start = document.getElementById('start-verse').value;
-      const end = document.getElementById('end-verse').value;
+      try {
+        const book = document.getElementById('bookSelect').value;
+        const chapter = document.getElementById('chapterInput').value;
+        const start = document.getElementById('start-verse').value;
+        const end = document.getElementById('end-verse').value;
 
-      // Mock Bible text data
-      const verses = {
-        "Acts": {
-          "1": { "1": "In the beginning, God created the heaven and the earth.", "2": "And the earth was without form, and void." }
+        // Mock Bible text data
+        const verses = {
+          "Acts": {
+            "1": { "1": "In the beginning, God created the heaven and the earth.", "2": "And the earth was without form, and void." }
+          }
+        };
+
+        if (!verses[book] || !verses[book][chapter]) {
+          document.getElementById('verseDisplay').innerText = "❌ No verses found for your selection.";
+          return;
         }
-      };
 
-      // Fetching verses
-      const chapterData = verses[book]?.[chapter];
-      if (chapterData) {
         let text = "";
         for (let i = start; i <= end; i++) {
-          if (chapterData[i]) {
-            text += `Verse ${i}: ${chapterData[i]}\n`;
-          }
+          text += verses[book][chapter][i] ? `Verse ${i}: ${verses[book][chapter][i]}\n` : "❌ Verse not available.\n";
         }
-        document.getElementById('verseDisplay').innerText = text || "❌ No verses found for your selection.";
-      } else {
-        document.getElementById('verseDisplay').innerText = "❌ No chapter data found.";
+
+        document.getElementById('verseDisplay').innerText = text.trim() || "❌ No verses available for your selection.";
+      } catch (error) {
+        console.error("Error loading Bible: ", error);
+        document.getElementById('verseDisplay').innerText = "❌ Error loading Bible text. Check console for details.";
       }
     }
 
