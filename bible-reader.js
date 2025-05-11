@@ -62,21 +62,42 @@ export function startReading() {
   readAndProgress();
 }
 
+// Read with Highlight
+export function startReadingWithHighlight() {
+  const verses = document.querySelectorAll('.verse-line');
+  let currentIndex = 0;
+
+  function highlightAndRead() {
+    if (currentIndex >= verses.length) return;
+
+    verses.forEach((v, i) => v.style.backgroundColor = (i === currentIndex) ? 'yellow' : 'transparent');
+    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^[0-9]+:\s*/, ''));
+    speech.onend = () => {
+      currentIndex++;
+      highlightAndRead();
+    };
+
+    speechSynthesis.speak(speech);
+  }
+
+  speechSynthesis.cancel();
+  highlightAndRead();
+}
+
 // Stop Reading
 export function stopReading() {
   speechSynthesis.cancel();
+  document.querySelectorAll('.verse-line').forEach(v => v.style.backgroundColor = 'transparent');
 }
 
-// Voice Command
+// Start Voice Command
 export function startVoiceCommand() {
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.lang = "en-US";
-
   recognition.onresult = (event) => {
     const command = event.results[0][0].transcript.toLowerCase();
     document.getElementById("voiceFeedback").innerText = `You said: "${command}"`;
   };
-
   recognition.start();
 }
 
