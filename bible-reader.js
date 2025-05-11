@@ -29,20 +29,21 @@ export async function loadBible() {
 
     if (end === 'full') {
       for (const key in chapterData[chapter]) {
-        text += `<div class='verse-line'>${chapterData[chapter][key]}</div>\n`;
+        text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[chapter][key]}</div>\n`;
       }
     } else {
       for (let i = start; i <= end; i++) {
         const verseKey = `${chapter}:${i}`;
         for (const chapterKey in chapterData) {
           if (chapterData[chapterKey] && chapterData[chapterKey][verseKey]) {
-            text += `<div class='verse-line'>${chapterData[chapterKey][verseKey]}</div>\n`;
+            text += `<div class='verse-line' id='verse-${verseKey}'>${i}: ${chapterData[chapterKey][verseKey]}</div>\n`;
           }
         }
       }
     }
 
     document.getElementById('verseDisplay').innerHTML = text.trim() || "❌ No verses available for your selection.";
+
     document.getElementById('readingProgress').style.width = '0%';
 
   } catch (error) {
@@ -51,7 +52,7 @@ export async function loadBible() {
   }
 }
 
-// Start Reading (without Highlight)
+// Start Reading (Normal)
 export function startReading() {
   const verses = document.querySelectorAll('.verse-line');
   let currentIndex = 0;
@@ -59,7 +60,7 @@ export function startReading() {
   function readAndProgress() {
     if (currentIndex >= verses.length) return;
 
-    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText);
+    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^[^:]+:\s*/, ''));
     speech.onend = () => {
       currentIndex++;
       updateProgress(currentIndex, verses.length);
@@ -78,9 +79,36 @@ export function startReading() {
   readAndProgress();
 }
 
+// Enhanced Read with Highlight
+export function startReadingWithHighlight() {
+  const verses = document.querySelectorAll('.verse-line');
+  let currentIndex = 0;
+
+  function highlightAndRead() {
+    if (currentIndex >= verses.length) return;
+
+    verses.forEach((verse, index) => {
+      verse.classList.toggle('highlight', index === currentIndex);
+      verse.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^[^:]+:\s*/, ''));
+    speech.onend = () => {
+      currentIndex++;
+      highlightAndRead();
+    };
+
+    speechSynthesis.speak(speech);
+  }
+
+  speechSynthesis.cancel();
+  highlightAndRead();
+}
+
 // Stop Reading
 export function stopReading() {
   speechSynthesis.cancel();
+  document.querySelectorAll('.verse-line').forEach(v => v.classList.remove('highlight'));
   document.getElementById('readingProgress').style.width = '0%';
 }
 
@@ -113,3 +141,4 @@ export function startVoiceCommand() {
 
   recognition.start();
 }
+
