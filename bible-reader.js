@@ -20,7 +20,7 @@ export async function loadBible() {
     const data = await response.json();
     const chapterData = data[book];
 
-    if (!chapterData) {
+    if (!chapterData || !chapterData[chapter]) {
       document.getElementById('verseDisplay').innerText = "❌ No verses found for your selection.";
       return;
     }
@@ -34,10 +34,8 @@ export async function loadBible() {
     } else {
       for (let i = start; i <= end; i++) {
         const verseKey = `${chapter}:${i}`;
-        for (const chapterKey in chapterData) {
-          if (chapterData[chapterKey] && chapterData[chapterKey][verseKey]) {
-            text += `<div class='verse-line' id='verse-${verseKey}'>${i}: ${chapterData[chapterKey][verseKey]}</div>\n`;
-          }
+        if (chapterData[chapter][verseKey]) {
+          text += `<div class='verse-line' id='verse-${verseKey}'>${i}: ${chapterData[chapter][verseKey]}</div>\n`;
         }
       }
     }
@@ -45,7 +43,8 @@ export async function loadBible() {
     document.getElementById('verseDisplay').innerHTML = text.trim() || "❌ No verses available for your selection.";
 
     // Reset progress bar
-    document.getElementById('readingProgress').style.width = '0%';
+    const progressBar = document.getElementById('readingProgress');
+    if (progressBar) progressBar.style.width = '0%';
 
   } catch (error) {
     console.error("Error loading Bible: ", error);
@@ -61,7 +60,7 @@ export function startReading() {
   function readAndProgress() {
     if (currentIndex >= verses.length) return;
 
-    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^\d+:\s*/, ''));
+    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^[\d:]+\s*/, ''));
     speech.onend = () => {
       currentIndex++;
       updateProgress(currentIndex, verses.length);
@@ -73,7 +72,8 @@ export function startReading() {
 
   function updateProgress(current, total) {
     const progress = (current / total) * 100;
-    document.getElementById('readingProgress').style.width = `${progress}%`;
+    const progressBar = document.getElementById('readingProgress');
+    if (progressBar) progressBar.style.width = `${progress}%`;
   }
 
   speechSynthesis.cancel();
@@ -83,7 +83,8 @@ export function startReading() {
 // Stop Reading
 export function stopReading() {
   speechSynthesis.cancel();
-  document.getElementById('readingProgress').style.width = '0%';
+  const progressBar = document.getElementById('readingProgress');
+  if (progressBar) progressBar.style.width = '0%';
 }
 
 // Start Voice Command
@@ -99,11 +100,11 @@ export function startVoiceCommand() {
       const bookName = match[1].trim();
       const chap = match[2];
 
-      const options = document.getElementById("bookSelect").options;
+      const options = document.getElementById('bookSelect').options;
       for (let option of options) {
         if (option.text.toLowerCase().includes(bookName.toLowerCase())) {
-          document.getElementById("bookSelect").value = option.value;
-          document.getElementById("chapterInput").value = chap;
+          document.getElementById('bookSelect').value = option.value;
+          document.getElementById('chapterInput').value = chap;
           loadBible();
           break;
         }
