@@ -27,7 +27,7 @@ export async function loadBible() {
 
     let text = "";
 
-    if (end === 'full') { // Load full chapter if no end verse
+    if (end === 'full') {
       for (const key in chapterData[chapter]) {
         text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[chapter][key]}</div>\n`;
       }
@@ -44,42 +44,46 @@ export async function loadBible() {
 
     document.getElementById('verseDisplay').innerHTML = text.trim() || "❌ No verses available for your selection.";
 
+    // Reset progress bar
+    document.getElementById('readingProgress').style.width = '0%';
+
   } catch (error) {
     console.error("Error loading Bible: ", error);
     document.getElementById('verseDisplay').innerText = "❌ Error loading Bible text. Check console for details.";
   }
 }
 
-// Enhanced Read with Highlight
-export function startReadingWithHighlight() {
+// Start Reading
+export function startReading() {
   const verses = document.querySelectorAll('.verse-line');
   let currentIndex = 0;
 
-  function highlightAndRead() {
+  function readAndProgress() {
     if (currentIndex >= verses.length) return;
-
-    verses.forEach((verse, index) => {
-      verse.style.backgroundColor = index === currentIndex ? 'yellow' : 'transparent';
-      verse.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
 
     const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^\d+:\s*/, ''));
     speech.onend = () => {
       currentIndex++;
-      highlightAndRead();
+      updateProgress(currentIndex, verses.length);
+      readAndProgress();
     };
 
     speechSynthesis.speak(speech);
   }
 
-  speechSynthesis.cancel(); // Ensure no other speech is playing
-  highlightAndRead();
+  function updateProgress(current, total) {
+    const progress = (current / total) * 100;
+    document.getElementById('readingProgress').style.width = `${progress}%`;
+  }
+
+  speechSynthesis.cancel();
+  readAndProgress();
 }
 
 // Stop Reading
 export function stopReading() {
   speechSynthesis.cancel();
-  document.querySelectorAll('.verse-line').forEach(v => v.style.backgroundColor = 'transparent');
+  document.getElementById('readingProgress').style.width = '0%';
 }
 
 // Start Voice Command
