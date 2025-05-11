@@ -27,20 +27,19 @@ export async function loadBible() {
 
     let text = "";
 
-    // Check for both formats
-    if (typeof chapterData[chapter] === 'object') {
-      // Nested format
-      const selectedChapter = chapterData[chapter];
-      for (let i = start; i <= (end === 'full' ? Object.keys(selectedChapter).length : end); i++) {
-        if (selectedChapter[i]) {
-          text += `<div class='verse-line' id='verse-${chapter}:${i}'>${i}: ${selectedChapter[i]}</div>\n`;
-        }
-      }
-    } else {
-      // Flat chapter-verse format
+    if (end === 'full') {
       for (const key in chapterData) {
         if (key.startsWith(chapter + ":")) {
           text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[key]}</div>\n`;
+        }
+      }
+    } else {
+      for (let i = start; i <= end; i++) {
+        const verseKey = `${chapter}:${i}`;
+        if (chapterData[verseKey]) {
+          text += `<div class='verse-line' id='verse-${verseKey}'>${verseKey}: ${chapterData[verseKey]}</div>\n`;
+        } else {
+          text += `<div class='verse-line' id='verse-${verseKey}'>${verseKey}: ❌ Verse not found</div>\n`;
         }
       }
     }
@@ -111,3 +110,4 @@ export function startVoiceCommand() {
   };
   recognition.start();
 }
+
