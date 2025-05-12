@@ -1,12 +1,10 @@
 {
   "name": "gracevoice",
   "version": "1.0.0",
-  "description": "GraceVoice: A voice-activated scripture reader powered by Mirror OS Intelligence for natural Bible interaction.",
   "type": "module",
   "scripts": {
     "dev": "vercel dev --listen 3000",
     "start": "vercel dev --listen 3000",
-    "build": "echo '📦 Static frontend – no build step required'",
     "deploy": "vercel --prod"
   },
   "dependencies": {
