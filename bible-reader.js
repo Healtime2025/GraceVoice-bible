@@ -35,7 +35,8 @@ export async function loadBible() {
       const [keyChapter, keyVerse] = key.split(':');
       console.log("Checking Key:", key, "Chapter:", keyChapter, "Verse:", keyVerse);
 
-      if (keyChapter === chapter) {
+      // Check if the key chapter matches the selected chapter
+      if (keyChapter === chapter || keyChapter.replace(/^0+/, '') === chapter) {
         if (end === 'full' || (keyVerse >= start && keyVerse <= end)) {
           text += `<div class='verse-line' id='verse-${key}'>${keyVerse}: ${chapterData[key]}</div>\n`;
         }
