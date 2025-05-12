@@ -84,6 +84,7 @@
           <p><strong>${entry.name || "Anonymous"}</strong></p>
           <p>${entry.text}</p>
           <small>🕒 ${new Date(entry.timestamp).toLocaleString()}</small>
+          <button onclick="celebrate('${entry.text}')">🙌 Hallelujah!</button>
         `;
         list.appendChild(div);
       });
@@ -102,9 +103,14 @@
       prayers.forEach(prayer => {
         const div = document.createElement("div");
         div.className = "testimony";
-        div.innerHTML = `<p><strong>🙏 ${prayer}</strong></p>`;
+        div.innerHTML = `<p><strong>🙏 ${prayer}</strong></p>
+        <button onclick="celebrate('${prayer}')">🙌 Hallelujah!</button>`;
         list.appendChild(div);
       });
+    }
+
+    function celebrate(message) {
+      alert(`🙌 Hallelujah! Celebrating this testimony: \n\n"${message}"`);
     }
 
     function submitTestimony() {
