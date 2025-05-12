@@ -3,179 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GraceVoice Reader</title>
+  <title>GraceVoice</title>
   <link rel="manifest" href="manifest.json">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f4f4f4;
       text-align: center;
-      padding: 30px;
-      transition: background 0.3s, color 0.3s;
+      padding: 40px;
     }
-    h1 {
-      font-size: 28px;
-      color: #2c3e50;
-    }
-    .verse-box {
-      margin: 20px auto;
-      padding: 20px;
-      max-width: 800px;
-      background: white;
-      border-radius: 10px;
-      font-size: 24px;
-      line-height: 1.8;
-      color: #333;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    h1 { font-size: 32px; color: #2c3e50; }
+    .scripture-box {
+      margin: 30px auto; padding: 20px; max-width: 800px;
+      background: white; border-radius: 10px; font-size: 24px;
+      line-height: 1.6; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       text-align: left;
     }
-    button {
-      padding: 12px 20px;
-      font-size: 16px;
-      margin: 10px 5px;
-      border: none;
-      background: #1976d2;
-      color: white;
-      border-radius: 8px;
+    button { padding: 15px 25px; font-size: 18px; margin: 10px;
+      border: none; background: #1976d2; color: white; border-radius: 8px;
       cursor: pointer;
-      transition: background 0.2s;
     }
-    button:hover {
-      background: #145a9e;
-    }
-    #bookRef {
-      margin-top: 10px;
-      font-style: italic;
-      color: #444;
-    }
-    .night-mode {
-      background: #1c1c1c;
-      color: #e0e0e0;
-    }
-    .night-mode .verse-box {
-      background: #2b2b2b;
-      color: #e0e0e0;
-    }
-    .night-mode button {
-      background: #333;
-      color: #fff;
-    }
-    .night-mode button:hover {
-      background: #555;
-    }
-    @media (max-width: 600px) {
-      .verse-box {
-        font-size: 20px;
-        padding: 15px;
-      }
-    }
+    button:hover { background: #145a9e; }
+    .night-mode { background-color: #1c1c1c; color: #e0e0e0; }
+    .night-mode .scripture-box { background-color: #2b2b2b; color: #e0e0e0; }
   </style>
 </head>
 <body>
-  <h1>📖 GraceVoice Reader</h1>
-  <div id="bookRef"></div>
-  <div class="verse-box" id="verseBox">Loading scripture...</div>
+  <h1>📖 GraceVoice</h1>
+
   <div>
-    <button onclick="playVerses()">▶️ Read</button>
-    <button onclick="repeatVerses()">🔁 Repeat</button>
-    <button onclick="stopReading()">⏹️ Stop</button>
-    <button id="themeBtn" onclick="toggleTheme()">🌙 Theme</button>
+    <label><input type="checkbox" id="themeToggle" onchange="toggleTheme()"> Night Mode</label>
   </div>
 
+  <div>
+    <button onclick="readSelected()">📘 Read Selection</button>
+    <button onclick="stopSpeech()">⏹️ Stop/Pause</button>
+  </div>
+
+  <div class="scripture-box" id="verseDisplay">
+    Click "Read Selection" to start.
+  </div>
+
+  <div id="voiceFeedback"></div>
+
   <script>
-    const verseBox = document.getElementById("verseBox");
-    const bookRef = document.getElementById("bookRef");
-    let fullText = "";
-    let selectedVoice = null;
-
-    function getQueryParam(param) {
-      return new URLSearchParams(window.location.search).get(param);
-    }
-
-    function playVerses(text = fullText) {
-      if (!text) return;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = selectedVoice || speechSynthesis.getVoices()[0] || null;
-      utterance.rate = 0.95;
-      utterance.pitch = 1;
-      speechSynthesis.cancel();
-      speechSynthesis.speak(utterance);
-      verseBox.scrollIntoView({ behavior: "smooth" });
-    }
-
-    function repeatVerses() {
-      stopReading();
-      setTimeout(() => playVerses(), 300);
-    }
-
-    function stopReading() {
-      speechSynthesis.cancel();
-    }
-
     function toggleTheme() {
-      const body = document.body;
-      const btn = document.getElementById("themeBtn");
-      const isDark = body.classList.toggle("night-mode");
-      btn.textContent = isDark ? "☀️ Theme" : "🌙 Theme";
-      localStorage.setItem("graceTheme", isDark ? "dark" : "light");
+      document.body.classList.toggle("night-mode");
+      localStorage.setItem("graceNightMode", document.body.classList.contains("night-mode"));
     }
 
-    async function loadScripture() {
-      const book = getQueryParam("book");
-      const chapter = getQueryParam("chapter");
-      const translation = getQueryParam("translation") || "web";
+    function readSelected() {
+      const book = "GEN";
+      const chapter = 1;
+      const start = 1;
+      const end = 5;
 
-      if (!book || !chapter) {
-        verseBox.textContent = "❌ Missing book or chapter in the URL.";
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api/fetch-script.js?book=${book}&chapter=${chapter}&translation=${translation}`);
-        const data = await response.json();
-
-        if (!data.verses || Object.keys(data.verses).length === 0) {
-          verseBox.textContent = "⚠️ No verses found for this chapter.";
-          return;
-        }
-
-        bookRef.textContent = `${data.book} Chapter ${data.chapter} (${translation.toUpperCase()})`;
-        fullText = Object.entries(data.verses).map(([v, t]) => `${v}. ${t}`).join(" ");
-        verseBox.innerHTML = Object.entries(data.verses)
-          .map(([v, t]) => `<p><strong>${v}</strong> ${t}</p>`)
-          .join("");
-
-        const bookmarks = JSON.parse(localStorage.getItem("graceAutoBookmarks") || "[]");
-        const alreadyLogged = bookmarks.find(b => b.book === book && b.chapter === chapter);
-        if (!alreadyLogged) {
-          bookmarks.unshift({ book, chapter, timestamp: new Date().toISOString() });
-          localStorage.setItem("graceAutoBookmarks", JSON.stringify(bookmarks.slice(0, 10)));
-        }
-
-        playVerses();
-      } catch (error) {
-        verseBox.textContent = "❌ Error loading scripture.";
-        console.error("[GraceVoice] Load error:", error);
-      }
+      fetch(`/api/fetch-script?book=${book}&chapter=${chapter}`)
+        .then(res => res.json())
+        .then(data => {
+          let versesText = '';
+          for (let i = start; i <= end; i++) {
+            if (data.verses[i]) {
+              versesText += `${i}. ${data.verses[i]} `;
+            }
+          }
+          const utterance = new SpeechSynthesisUtterance(versesText);
+          const voices = speechSynthesis.getVoices();
+          utterance.voice = voices[0];
+          speechSynthesis.cancel();
+          speechSynthesis.speak(utterance);
+        });
     }
 
-    function waitForVoices(callback) {
-      const voices = speechSynthesis.getVoices();
-      if (voices.length) return callback();
-      speechSynthesis.onvoiceschanged = callback;
+    function stopSpeech() {
+      speechSynthesis.cancel();
     }
 
-    window.onload = () => {
-      if (localStorage.getItem("graceTheme") === "dark") {
+    window.onload = function() {
+      if (localStorage.getItem("graceNightMode") === "true") {
         document.body.classList.add("night-mode");
-        document.getElementById("themeBtn").textContent = "☀️ Theme";
       }
-
-      waitForVoices(() => {
-        const voices = speechSynthesis.getVoices();
-        selectedVoice = voices.find(v => v.lang.startsWith("en")) || voices[0] || null;
-        loadScripture();
-      });
     };
   </script>
 </body>
