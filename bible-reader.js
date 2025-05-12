@@ -20,25 +20,25 @@ export async function loadBible() {
     const data = await response.json();
     const chapterData = data[book];
 
-    if (!chapterData || !chapterData[chapter]) {
+    if (!chapterData) {
       document.getElementById('verseDisplay').innerText = "❌ No verses found for your selection.";
       return;
     }
 
     let text = "";
 
-    if (end === 'full') {
-      for (const key in chapterData[chapter]) {
-        text += `<div class='verse-line' id='verse-${key}'>${key}: ${chapterData[chapter][key]}</div>\n`;
-      }
-    } else {
-      for (let i = start; i <= end; i++) {
-        const verseKey = `${chapter}:${i}`;
-        text += `<div class='verse-line' id='verse-${verseKey}'>${i}: ${chapterData[chapter][verseKey] || "Verse not found"}</div>\n`;
+    for (const key in chapterData) {
+      const [keyChapter, keyVerse] = key.split(':');
+      if (keyChapter === chapter) {
+        if (end === 'full' || (keyVerse >= start && keyVerse <= end)) {
+          text += `<div class='verse-line' id='verse-${key}'>${keyVerse}: ${chapterData[key]}</div>\n`;
+        }
       }
     }
 
-    document.getElementById('verseDisplay').innerHTML = text.trim() || "❌ No verses available for your selection.";
+    if (text.trim() === "") text = "❌ No verses available for your selection.";
+
+    document.getElementById('verseDisplay').innerHTML = text.trim();
 
   } catch (error) {
     console.error("Error loading Bible: ", error);
@@ -67,40 +67,8 @@ export function startReading() {
   readAndProgress();
 }
 
-// Read with Highlight
-export function startReadingWithHighlight() {
-  const verses = document.querySelectorAll('.verse-line');
-
-  function highlightAndRead() {
-    if (currentIndex >= verses.length) return;
-
-    verses.forEach((v, i) => v.style.backgroundColor = (i === currentIndex) ? 'yellow' : 'transparent');
-    const speech = new SpeechSynthesisUtterance(verses[currentIndex].innerText.replace(/^[0-9]+:\s*/, ''));
-    speech.onend = () => {
-      currentIndex++;
-      highlightAndRead();
-    };
-
-    speechSynthesis.speak(speech);
-  }
-
-  speechSynthesis.cancel();
-  highlightAndRead();
-}
-
 // Stop Reading
 export function stopReading() {
   speechSynthesis.cancel();
   document.querySelectorAll('.verse-line').forEach(v => v.style.backgroundColor = 'transparent');
-}
-
-// Start Voice Command
-export function startVoiceCommand() {
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = "en-US";
-  recognition.onresult = (event) => {
-    const command = event.results[0][0].transcript.toLowerCase();
-    document.getElementById("voiceFeedback").innerText = `You said: "${command}"`;
-  };
-  recognition.start();
 }
