@@ -22,7 +22,9 @@
       max-width: 700px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       text-align: left;
+      transition: transform 0.3s;
     }
+    .testimony:hover { transform: scale(1.02); }
     .testimony strong { color: #1976d2; }
     .testimony small { color: #777; }
     textarea, input[type="text"] {
@@ -42,17 +44,14 @@
       color: white;
       border-radius: 8px;
       cursor: pointer;
+      transition: background 0.3s;
     }
     button:hover { background: #145a9e; }
     .night-mode { background-color: #1c1c1c; color: #e0e0e0; }
     .night-mode .testimony { background-color: #2b2b2b; color: #e0e0e0; }
-    .night-mode button { background-color: #333; }
-    .night-mode button:hover { background-color: #555; }
   </style>
 </head>
 <body>
-  <button style="position: absolute; top: 15px; left: 15px;" onclick="window.location.href='index.html'">🏠 Home</button>
-
   <h1>🙏 Shared Testimonies</h1>
 
   <div id="testimonyList">Loading testimonies...</div>
@@ -92,42 +91,17 @@
       const text = document.getElementById("testimonyInput").value.trim();
       if (!text) return alert("Please write your testimony.");
 
-      const entry = {
-        name,
-        text,
-        timestamp: new Date().toISOString()
-      };
-
+      const entry = { name, text, timestamp: new Date().toISOString() };
       const data = JSON.parse(localStorage.getItem("graceTestimonies") || "[]");
-      data.push(entry);
-      localStorage.setItem("graceTestimonies", JSON.stringify(data));
+      data.unshift(entry);
+      localStorage.setItem("graceTestimonies", JSON.stringify(data.slice(0, 100)));
 
       document.getElementById("nameInput").value = "";
       document.getElementById("testimonyInput").value = "";
       loadTestimonies();
     }
 
-    window.onload = () => {
-      if (localStorage.getItem("graceTheme") === "dark") {
-        document.body.classList.add("night-mode");
-      }
-      loadTestimonies();
-    };
+    window.onload = () => { loadTestimonies(); };
   </script>
-  <script>
-  // 📖 GraceVoice Service Worker Registration
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-          console.log('[GraceVoice SW] Registered:', registration);
-        })
-        .catch(error => {
-          console.error('[GraceVoice SW] Registration Failed:', error);
-        });
-    });
-  }
-</script>
-
 </body>
 </html>
