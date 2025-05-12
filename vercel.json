@@ -1,35 +1,4 @@
 {
-  "name": "gracevoice",
-  "version": "1.0.0",
-  "description": "GraceVoice: A voice-activated scripture reader powered by Mirror OS Intelligence for natural Bible interaction.",
-  "type": "module",
-  "scripts": {
-    "dev": "vercel dev --listen 3000",
-    "start": "vercel dev --listen 3000",
-    "build": "echo '📦 Static frontend – no build step required'",
-    "deploy": "vercel --prod"
-  },
-  "dependencies": {
-    "node-fetch": "^3.3.2"
-  },
-  "engines": {
-    "node": ">=16.0.0 <20.0.0"
-  },
-  "keywords": [
-    "GraceVoice",
-    "Bible",
-    "Voice Assistant",
-    "Scripture Reader",
-    "PWA",
-    "Mirror OS",
-    "Offline App"
-  ],
-  "license": "MIT",
-  "author": "King Solomon",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Healtime2025/GraceVoice-online"
-  },
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/index2", "destination": "/index2.html" },
@@ -45,5 +14,16 @@
     { "source": "/log", "destination": "/log.html" }
   ],
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ]
 }
