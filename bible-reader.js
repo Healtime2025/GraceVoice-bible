@@ -22,7 +22,13 @@ export async function loadBible() {
     const data = await response.json();
     console.log("Loaded Data:", data);
 
-    const chapterData = data[book];
+    let chapterData = data[book];
+
+    // Auto-detect and fix any nested empty string keys
+    if (chapterData && chapterData[""]) {
+      chapterData = chapterData[""];
+      console.log("Detected and accessed nested chapter data.");
+    }
 
     if (!chapterData) {
       document.getElementById('verseDisplay').innerText = "❌ No verses found for your selection.";
