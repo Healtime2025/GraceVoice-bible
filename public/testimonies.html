@@ -52,9 +52,10 @@
   </style>
 </head>
 <body>
-  <h1>🙏 Shared Testimonies</h1>
+  <h1>🙏 Shared Testimonies & Answered Prayers</h1>
 
-  <div id="testimonyList">Loading testimonies...</div>
+  <h2>🌟 Answered Prayers</h2>
+  <div id="answeredPrayers">Loading answered prayers...</div>
 
   <h2 style="margin-top:40px">📝 Share Your Testimony</h2>
   <div style="max-width:700px;margin:auto">
@@ -62,6 +63,8 @@
     <textarea id="testimonyInput" rows="5" placeholder="Write your testimony..."></textarea>
     <button onclick="submitTestimony()">📤 Submit Testimony</button>
   </div>
+
+  <div id="testimonyList">Loading testimonies...</div>
 
   <script>
     function loadTestimonies() {
@@ -86,6 +89,24 @@
       });
     }
 
+    function loadAnsweredPrayers() {
+      const list = document.getElementById("answeredPrayers");
+      const prayers = JSON.parse(localStorage.getItem("graceAnsweredPrayers") || "[]");
+
+      if (!prayers.length) {
+        list.innerHTML = '<p>No answered prayers yet.</p>';
+        return;
+      }
+
+      list.innerHTML = "";
+      prayers.forEach(prayer => {
+        const div = document.createElement("div");
+        div.className = "testimony";
+        div.innerHTML = `<p><strong>🙏 ${prayer}</strong></p>`;
+        list.appendChild(div);
+      });
+    }
+
     function submitTestimony() {
       const name = document.getElementById("nameInput").value.trim();
       const text = document.getElementById("testimonyInput").value.trim();
@@ -101,7 +122,10 @@
       loadTestimonies();
     }
 
-    window.onload = () => { loadTestimonies(); };
+    window.onload = () => {
+      loadTestimonies();
+      loadAnsweredPrayers();
+    };
   </script>
 </body>
 </html>
