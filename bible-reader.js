@@ -14,10 +14,14 @@ export async function loadBible() {
     const end = document.getElementById('end-verse').value || 'full';
 
     const url = `https://raw.githubusercontent.com/Healtime2025/GraceVoice-online/main/bibles/English/KJV/${book}.json`;
+    console.log("Loading URL:", url);
+
     const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to load Bible file.");
 
     const data = await response.json();
+    console.log("Loaded Data:", data);
+
     const chapterData = data[book];
 
     if (!chapterData) {
@@ -29,6 +33,8 @@ export async function loadBible() {
 
     for (const key in chapterData) {
       const [keyChapter, keyVerse] = key.split(':');
+      console.log("Checking Key:", key, "Chapter:", keyChapter, "Verse:", keyVerse);
+
       if (keyChapter === chapter) {
         if (end === 'full' || (keyVerse >= start && keyVerse <= end)) {
           text += `<div class='verse-line' id='verse-${key}'>${keyVerse}: ${chapterData[key]}</div>\n`;
