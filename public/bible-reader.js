@@ -85,17 +85,4 @@ export function stopReading() {
   speechSynthesis.cancel();
   document.querySelectorAll('.verse-line').forEach(v => v.style.backgroundColor = 'transparent');
 }
-<script>
-  // 📖 GraceVoice Service Worker Registration
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-          console.log('[GraceVoice SW] Registered:', registration);
-        })
-        .catch(error => {
-          console.error('[GraceVoice SW] Registration Failed:', error);
-        });
-    });
-  }
-</script>
+
