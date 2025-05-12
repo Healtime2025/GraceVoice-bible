@@ -1,6 +1,6 @@
 // 📖 GraceVoice Service Worker
 
-const CACHE_NAME = "gracevoice-cache-v2";
+const CACHE_NAME = "gracevoice-cache-v3";
 const STATIC_FILES = [
   "/",
   "/index.html",
@@ -10,7 +10,9 @@ const STATIC_FILES = [
   "/reader.html",
   "/settings.html",
   "/bookmarks.html",
-  "/notes.html"
+  "/notes.html",
+  "/receive-christ.html",
+  "/prayer-wall.html"
 ];
 
 // ✅ Install: Cache static app shell
@@ -53,7 +55,7 @@ self.addEventListener("fetch", (event) => {
       caches.open("gracevoice-dynamic").then((cache) =>
         fetch(event.request)
           .then((response) => {
-            cache.put(event.request, response.clone()); // 🧠 Save future offline
+            cache.put(event.request, response.clone());
             return response;
           })
           .catch(() => {
