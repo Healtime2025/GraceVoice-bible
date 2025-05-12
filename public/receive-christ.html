@@ -36,6 +36,7 @@
     button:hover { background: #145a9e; }
     a { color: #1976d2; font-weight: bold; cursor: pointer; }
     .verse { font-style: italic; margin-top: 10px; }
+    #announcement { background: #e1f5fe; padding: 15px; border-radius: 8px; margin-top: 20px; display: none; }
   </style>
 </head>
 <body>
@@ -43,65 +44,43 @@
 
  <div class="section">
   <p><strong>My name is Solomon Moriti from South Africa.</strong></p>
-  <p>I received CHRIST in 1994, it has been <span id="yearsInChrist"></span> years now and I have seen GOD's hand in my life ever since. If you're not sure whether you'll go to Heaven one day when you leave this planet earth, you can make sure <strong>right now</strong>.</p>
+  <p>I received CHRIST in 1994, it has been <span id="yearsInChrist"></span> years now and I have seen GOD's hand in my life ever since. If you're not sure whether you'll go to Heaven one day, you can make sure <strong>right now</strong>.</p>
 
   <p><strong>You can pray this prayer if you wish God to change your life:</strong></p>
-  <p>Dear LORD, I know that I am a sinner and I ask for your forgiveness. I believe that you died for my sins and rose again. I repent before you and ask you to take my sins away. I invite you to come into my heart and my life. I want to trust and follow you as my LORD and Savior for the rest of my days. In the name of Jesus Christ I pray. Amen.</p>
+  <p>Dear LORD, I know that I am a sinner and I ask for your forgiveness. I believe that you died for my sins and rose again. I repent before you and ask you to take my sins away. I invite you to come into my heart and my life. In the name of Jesus Christ I pray. Amen.</p>
 
-  <p>If you prayed that prayer sincerely, then according to the word of GOD you are born again. You are now GOD's child and Jesus lives in your heart. You can start reading the Bible from the book of John daily and pray. You will see God changing your life.</p>
-
-  <p class="verse">✝️ <a onclick="readVerse('1 Corinthians 5:17')">1 Corinthians 5:17</a>: "Therefore if any man be in Christ, he is a new creature: old things are passed away; behold, all things are become new."</p>
+  <div id="announcement"></div>
 
   <hr>
-  <h3>📩 I Have Received Christ</h3>
-  <form onsubmit="return handleSubmission(event)">
-    <input type="text" id="fullName" placeholder="Your Full Name" required />
-    <input type="tel" id="mobile" placeholder="WhatsApp Number" required />
-    <textarea id="message" rows="4" placeholder="Your message (optional)"></textarea>
-    <button type="submit">✅ I Received Christ</button>
-  </form>
-  <p id="confirmation"></p>
-
-  <hr>
-  <h3>🎉 Congratulate New Believers</h3>
-  <button onclick="addCongrats()">👏 Click to Congratulate</button>
-  <p id="congratsCount">❤️ 0 people have clicked to celebrate!</p>
-
-  <button style="margin-top: 20px;" onclick="window.location.href='index.html'">🏠 Return to Home Page</button>
+  <h3>🎉 Recent Announcements</h3>
+  <div id="announcementList">No announcements yet.</div>
 </div>
 
 <script>
-  const birthYear = 1978;
   const receivedYear = 1994;
   const currentYear = new Date().getFullYear();
   document.getElementById("yearsInChrist").textContent = currentYear - receivedYear;
 
-  function readVerse(ref) {
-    const msg = new SpeechSynthesisUtterance(ref + ': Therefore if any man be in Christ, he is a new creature. Old things are passed away. All things become new.');
-    msg.rate = 0.95;
-    msg.pitch = 1;
-    speechSynthesis.speak(msg);
-  }
-
   function handleSubmission(e) {
     e.preventDefault();
     const name = document.getElementById("fullName").value;
-    document.getElementById("confirmation").textContent = `Thank you ${name}, we will reach out to you on WhatsApp.`;
+    document.getElementById("announcement").innerHTML = `🎉 <strong>${name}</strong> has received Christ! Everyone, let’s celebrate and pray for them!`;
+    document.getElementById("announcement").style.display = "block";
+
+    const announcements = JSON.parse(localStorage.getItem("graceAnnouncements") || "[]");
+    announcements.unshift(`${name} has received Christ! 🎉`);
+    localStorage.setItem("graceAnnouncements", JSON.stringify(announcements.slice(0, 10)));
+
+    renderAnnouncements();
   }
 
-  function addCongrats() {
-    let count = parseInt(localStorage.getItem("graceCongrats") || "0");
-    count++;
-    localStorage.setItem("graceCongrats", count);
-    document.getElementById("congratsCount").textContent = `❤️ ${count} people have clicked to celebrate!`;
+  function renderAnnouncements() {
+    const list = document.getElementById("announcementList");
+    const announcements = JSON.parse(localStorage.getItem("graceAnnouncements") || "[]");
+    list.innerHTML = announcements.map(a => `<p>${a}</p>`).join("");
   }
 
-  window.onload = () => {
-    let saved = localStorage.getItem("graceCongrats");
-    if (saved) {
-      document.getElementById("congratsCount").textContent = `❤️ ${saved} people have clicked to celebrate!`;
-    }
-  };
+  window.onload = () => { renderAnnouncements(); };
 </script>
 </body>
 </html>
