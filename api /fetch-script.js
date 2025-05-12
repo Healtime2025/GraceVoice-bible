@@ -12,88 +12,20 @@
       text-align: center;
       padding: 40px;
     }
-    h1 {
-      font-size: 32px;
-      color: #2c3e50;
-    }
+    h1 { font-size: 32px; color: #2c3e50; }
     .scripture-box {
-      margin: 30px auto;
-      padding: 20px;
-      max-width: 800px;
-      background: white;
-      border-radius: 10px;
-      font-size: 24px;
-      line-height: 1.6;
-      color: #333;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin: 30px auto; padding: 20px; max-width: 800px;
+      background: white; border-radius: 10px; font-size: 24px;
+      line-height: 1.6; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       text-align: left;
     }
-    button {
-      padding: 15px 25px;
-      font-size: 18px;
-      margin: 10px;
-      border: none;
-      background: #1976d2;
-      color: white;
-      border-radius: 8px;
+    button { padding: 15px 25px; font-size: 18px; margin: 10px;
+      border: none; background: #1976d2; color: white; border-radius: 8px;
       cursor: pointer;
     }
-    button:hover {
-      background: #145a9e;
-    }
-    .bookmark-btn {
-      font-size: 14px;
-      padding: 4px 8px;
-      margin-left: 10px;
-      background: #ddd;
-      color: #444;
-      border-radius: 4px;
-    }
-    .bookmark-btn:hover {
-      background: #ccc;
-    }
-    #voiceFeedback {
-      margin-top: 10px;
-      font-style: italic;
-      color: #555;
-    }
-    select, input[type="number"] {
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-    .verse-line {
-      display: block;
-      margin: 8px 0;
-    }
-    .active-verse {
-      background-color: #e0f0ff;
-      font-weight: bold;
-      padding: 4px;
-      border-radius: 5px;
-    }
-    .night-mode {
-      background-color: #1c1c1c;
-      color: #e0e0e0;
-    }
-    .night-mode .scripture-box {
-      background-color: #2b2b2b;
-      color: #e0e0e0;
-    }
-    .night-mode button {
-      background-color: #333;
-      color: #fff;
-    }
-    .night-mode button:hover {
-      background-color: #555;
-    }
-    .night-mode select, .night-mode input[type="number"] {
-      background-color: #444;
-      color: #fff;
-      border-color: #666;
-    }
+    button:hover { background: #145a9e; }
+    .night-mode { background-color: #1c1c1c; color: #e0e0e0; }
+    .night-mode .scripture-box { background-color: #2b2b2b; color: #e0e0e0; }
   </style>
 </head>
 <body>
@@ -104,136 +36,54 @@
   </div>
 
   <div>
-    <select id="voiceSelect"></select>
-  </div>
-
-  <div>
-    <button onclick="readText()">▶️ Start Reading (Full)</button>
-    <button onclick="stopSpeech()">⏹️ Stop/Pause</button>
-    <button onclick="readHighlighted()">🔍 Read with Highlight</button>
-    <button onclick="startVoice()">🎙️ Voice Command</button>
-  </div>
-
-  <div>
-    <select id="bookSelect">
-      <option value="">-- Select Book --</option>
-      <option value="GEN">Genesis</option>
-      <option value="EXO">Exodus</option>
-      <option value="LEV">Leviticus</option>
-      <option value="NUM">Numbers</option>
-      <option value="DEU">Deuteronomy</option>
-      <option value="JOS">Joshua</option>
-      <option value="JDG">Judges</option>
-      <option value="RUT">Ruth</option>
-      <option value="1SA">1 Samuel</option>
-      <option value="2SA">2 Samuel</option>
-      <option value="1KI">1 Kings</option>
-      <option value="2KI">2 Kings</option>
-      <option value="1CH">1 Chronicles</option>
-      <option value="2CH">2 Chronicles</option>
-      <option value="EZR">Ezra</option>
-      <option value="NEH">Nehemiah</option>
-      <option value="EST">Esther</option>
-      <option value="JOB">Job</option>
-      <option value="PSA">Psalms</option>
-      <option value="PRO">Proverbs</option>
-      <option value="ECC">Ecclesiastes</option>
-      <option value="SNG">Song of Solomon</option>
-      <option value="ISA">Isaiah</option>
-      <option value="JER">Jeremiah</option>
-      <option value="LAM">Lamentations</option>
-      <option value="EZK">Ezekiel</option>
-      <option value="DAN">Daniel</option>
-      <option value="HOS">Hosea</option>
-      <option value="JOL">Joel</option>
-      <option value="AMO">Amos</option>
-      <option value="OBA">Obadiah</option>
-      <option value="JON">Jonah</option>
-      <option value="MIC">Micah</option>
-      <option value="NAH">Nahum</option>
-      <option value="HAB">Habakkuk</option>
-      <option value="ZEP">Zephaniah</option>
-      <option value="HAG">Haggai</option>
-      <option value="ZEC">Zechariah</option>
-      <option value="MAL">Malachi</option>
-      <option value="MAT">Matthew</option>
-      <option value="MRK">Mark</option>
-      <option value="LUK">Luke</option>
-      <option value="JHN">John</option>
-      <option value="ACT">Acts</option>
-      <option value="ROM">Romans</option>
-      <option value="1CO">1 Corinthians</option>
-      <option value="2CO">2 Corinthians</option>
-      <option value="GAL">Galatians</option>
-      <option value="EPH">Ephesians</option>
-      <option value="PHP">Philippians</option>
-      <option value="COL">Colossians</option>
-      <option value="1TH">1 Thessalonians</option>
-      <option value="2TH">2 Thessalonians</option>
-      <option value="1TI">1 Timothy</option>
-      <option value="2TI">2 Timothy</option>
-      <option value="TIT">Titus</option>
-      <option value="PHM">Philemon</option>
-      <option value="HEB">Hebrews</option>
-      <option value="JAS">James</option>
-      <option value="1PE">1 Peter</option>
-      <option value="2PE">2 Peter</option>
-      <option value="1JN">1 John</option>
-      <option value="2JN">2 John</option>
-      <option value="3JN">3 John</option>
-      <option value="JUD">Jude</option>
-      <option value="REV">Revelation</option>
-    </select>
-    <input id="chapterInput" type="number" placeholder="Chapter" min="1" />
-    <input id="startVerseInput" type="number" placeholder="Start Verse" min="1" />
-    <input id="endVerseInput" type="number" placeholder="End Verse (optional)" min="1" />
     <button onclick="readSelected()">📘 Read Selection</button>
+    <button onclick="stopSpeech()">⏹️ Stop/Pause</button>
   </div>
 
   <div class="scripture-box" id="verseDisplay">
-    Click "Start Reading" or use voice command
+    Click "Read Selection" to start.
   </div>
 
   <div id="voiceFeedback"></div>
 
-  <div style="margin-top: 40px">
-    <button onclick="window.location.href='settings.html'">⚙️ Settings</button>
-    <button onclick="window.location.href='testimonies.html'">📣 Testimonies</button>
-    <button onclick="window.location.href='receive-christ.html'">🙏 Receive Christ</button>
-    <button onclick="window.location.href='prayer-wall.html'">🧱 Prayer Wall</button>
-    <button onclick="window.location.href='about.html'">ℹ️ About</button>
-  </div>
-
-<script>
-  function readSelected() {
-    const book = document.getElementById("bookSelect").value;
-    const chapter = document.getElementById("chapterInput").value;
-    const start = parseInt(document.getElementById("startVerseInput").value);
-    const end = parseInt(document.getElementById("endVerseInput").value);
-    const translation = localStorage.getItem("graceTranslation") || "web";
-
-    if (!book || !chapter || !start || !end) {
-      alert("❗ Please fill in book, chapter, and verse range.");
-      return;
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle("night-mode");
+      localStorage.setItem("graceNightMode", document.body.classList.contains("night-mode"));
     }
 
-    fetch(`/api/fetch-script.js?book=${book}&chapter=${chapter}&translation=${translation}`)
-      .then(res => res.json())
-      .then(data => {
-        let versesText = '';
-        for (let i = start; i <= end; i++) {
-          if (data.verses[i]) {
-            versesText += `${i}. ${data.verses[i]} `;
+    function readSelected() {
+      const book = "GEN";
+      const chapter = 1;
+      const start = 1;
+      const end = 5;
+
+      fetch(`/api/fetch-script?book=${book}&chapter=${chapter}`)
+        .then(res => res.json())
+        .then(data => {
+          let versesText = '';
+          for (let i = start; i <= end; i++) {
+            if (data.verses[i]) {
+              versesText += `${i}. ${data.verses[i]} `;
+            }
           }
-        }
-        const utterance = new SpeechSynthesisUtterance(versesText);
-        const voices = speechSynthesis.getVoices();
-        const savedIndex = localStorage.getItem("graceVoiceIndex") || 0;
-        utterance.voice = voices[savedIndex] || voices[0];
-        speechSynthesis.cancel();
-        speechSynthesis.speak(utterance);
-      });
-  }
-</script>
+          const utterance = new SpeechSynthesisUtterance(versesText);
+          const voices = speechSynthesis.getVoices();
+          utterance.voice = voices[0];
+          speechSynthesis.cancel();
+          speechSynthesis.speak(utterance);
+        });
+    }
+
+    function stopSpeech() {
+      speechSynthesis.cancel();
+    }
+
+    window.onload = function() {
+      if (localStorage.getItem("graceNightMode") === "true") {
+        document.body.classList.add("night-mode");
+      }
+    };
+  </script>
 </body>
 </html>
